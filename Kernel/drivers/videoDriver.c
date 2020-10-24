@@ -50,12 +50,16 @@ struct vbe_mode_info_structure
 
 struct vbe_mode_info_structure * screen_data = 0x0000000000005C00; //VBEModeInfoBlock //(void*) 0x5C00 Por que? No hay pol que
 
-void draw_pixel(){
-    char* current_position = screen_data->framebuffer;
-    *current_position = 155;
+void draw_pixel(int row, int col){
+    char* current_position = screen_data->framebuffer + 3 * (row * screen_data->width + col);
+    for (int i = 0; i < 1000; i++)
+    {
+    *current_position = 200;
     current_position++;
-    *current_position = 155;
-    current_position++;*current_position = 155;
+    *current_position = 0;
     current_position++;
+    *current_position = 200;
+    current_position++;
+    }
 
 }

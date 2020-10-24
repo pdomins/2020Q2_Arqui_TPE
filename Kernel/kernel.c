@@ -99,11 +99,9 @@ int main()
 	ncPrint("  Sample data module contents: ");
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
-
-	for (int i = 0; i < 100; i++){
-	//draw_pixel();
-	}
-	while(1);
+	
+	draw_pixel(10,10);
+	
 	ncPrint("[Finished]");
 	return 0;
 }
