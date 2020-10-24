@@ -3,6 +3,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <videoDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -99,6 +100,10 @@ int main()
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
+	for (int i = 0; i < 100; i++){
+	//draw_pixel();
+	}
+	while(1);
 	ncPrint("[Finished]");
 	return 0;
 }
