@@ -1,5 +1,10 @@
 #include <keyboardDriver.h>
+#include <lib.h>
 #define KEYS 59 // o 60?
+#define MIN_SCAN 0 MAX_SCAN 59 
+char buffer[5];
+int prev = 0;
+int curr = 0; 
 static char pressCodes[KEYS][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'},
  {'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'}, 
 {'8', '*'}, {'9', '('}, {'0', ')'}, {'-', '_'}, {'=', '+'},

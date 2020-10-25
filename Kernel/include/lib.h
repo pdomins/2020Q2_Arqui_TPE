@@ -12,4 +12,6 @@ int getSeconds();
 int getMinutes();
 int getHours();
 
+int read_keyboard();
+
 #endif
