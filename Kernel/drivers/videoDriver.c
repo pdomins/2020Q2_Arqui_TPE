@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <videoDriver.h>
+#include <font.h>
 
 
 unsigned int bg_color = 0x0;
@@ -50,6 +51,22 @@ struct vbe_mode_info_structure
 
 struct vbe_mode_info_structure * screen_data = 0x0000000000005C00; //VBEModeInfoBlock //(void*) 0x5C00 Por que? No hay pol que
 
+void draw_char(char character, int row, int col, int color){
+    char * bitMap = charBitmap((int) character);
+    for(int i = 0; i < CHAR_HEIGHT; i++) {
+        for(int j = 0; j < CHAR_WIDTH; j++) {
+            int pos = 1;
+            unsigned int point = (bitMap[i] & (pos)) >> j;
+            if(point == 0) {
+                draw_pixel(row + i, col + j, 0x000000);
+            } else {
+                draw_pixel(row + i, col + j, color);
+            }
+            pos *= 2;
+        }
+    }
+}
+
 void draw_pixel(int row, int col, int color){
     char* current_position = screen_data->framebuffer + 3 * (row * screen_data->width + col);
 
@@ -57,14 +74,10 @@ void draw_pixel(int row, int col, int color){
     int green = (color >> 8) & 0xFF;
     int red = (color >> 16) & 0xFF;
 
-    for (int i = 0; i < 1; i++)
-    {
-        *current_position = blue;
-        current_position++;
-        *current_position = green;
-        current_position++;
-        *current_position = red;
-        current_position++;
-    }
-
+    *current_position = blue;
+    current_position++;
+    *current_position = green;
+    current_position++;
+    *current_position = red;
+    //current_position++;
 }

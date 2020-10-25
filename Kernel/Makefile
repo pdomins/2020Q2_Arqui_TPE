@@ -3,9 +3,11 @@ include Makefile.inc
 KERNEL=kernel.bin
 SOURCES=$(wildcard *.c)
 DRIVERS=$(wildcard drivers/*.c)
+INTERRUPTIONS=$(wildcard interruptions/*.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
 OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_DRIVERS=$(DRIVERS:.c=.o)
+OBJECTS_INTERRUPTIONS=$(INTERRUPTIONS:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=loader.asm
 
@@ -14,7 +16,7 @@ STATICLIBS=
 
 all: $(KERNEL)
 
-$(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(OBJECTS_DRIVERS)
+$(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(OBJECTS_DRIVERS) $(OBJECTS_INTERRUPTIONS)
 	$(LD) $(LDFLAGS) -T kernel.ld -o $@ $^
 
 %.o: %.c

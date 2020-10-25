@@ -5,6 +5,8 @@
 #include <naiveConsole.h>
 #include <videoDriver.h>
 
+#include <idtLoader.h>
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -36,6 +38,7 @@ void * getStackBase()
 
 void * initializeKernelBinary()
 {
+
 	char buffer[10];
 
 	ncPrint("[x64BareBones]");
@@ -83,6 +86,7 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	load_idt();
 	ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
@@ -100,9 +104,13 @@ int main()
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
-	for(int i = 1; i < 512; i++) {
-        draw_pixel(i, i, 0x97f0ee);
-    }
+	//for(int i = 1; i < 512; i++) {
+    //    draw_pixel(i, i, 0x97f0ee);
+    //}
+
+	draw_char('A', 10, 10, 0xFF00FF);
+
+	while(1);
 
 	ncPrint("[Finished]");
     return 0;
