@@ -108,15 +108,15 @@ int main()
     //    draw_pixel(i, i, 0x97f0ee);
     //}
 
-//    draw_pixel(9,9,0xffffff);
-//    draw_char('P', 10, 100, 0xeb8334);
-//    draw_char('A', 10, 108, 0xc0eb34);
-//    draw_char('U', 10, 116, 0x34eb37);
-//    draw_char('L', 10, 124, 0x05ffe6);
-//    draw_char('A', 10, 132, 0x7605ff);
-//
-//    draw_char('<', 27, 124, 0xff0505);
-//    draw_char('3', 27, 132, 0xff0505);
+    draw_pixel(9,9,0xffffff);
+    draw_char('P', 10, 100, 0xeb8334);
+    draw_char('A', 10, 108, 0xc0eb34);
+    draw_char('U', 10, 116, 0x34eb37);
+    draw_char('L', 10, 124, 0x05ffe6);
+    draw_char('A', 10, 132, 0x7605ff);
+
+    draw_char('<', 27, 124, 0xff0505);
+    draw_char('3', 27, 132, 0xff0505);
 
 
 	while(1);

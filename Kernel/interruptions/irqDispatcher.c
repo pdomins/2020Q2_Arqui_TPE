@@ -25,5 +25,5 @@ void int_20() {
 
 void int_21(){
 	keyboard_management();
-	printLatest();
+//	printLatest();
 }

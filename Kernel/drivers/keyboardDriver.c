@@ -21,14 +21,35 @@ static char pressCodes[KEYS][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'},
 {'n', 'N'}, {'m', 'M'}, {',', '<'}, {'.', '>'}, {'/', '?'},
 {0, 0}, {0, 0}, {0, 0}, {' ', ' '}, {0, 0}};
 
+static int shiftPressed = 0;
+static int blockMayus = 0;
+
 void keyboard_management(){
     int scan_code = read_keyboard();
     prev = curr;
-    buffer[curr++] = pressCodes[scan_code][0];
-    curr = curr % 5;
+    if(scan_code == 0x2A || scan_code == 0x36) {
+        shiftPressed = 1;
+    } else if(scan_code == (0x2A + 0x80) || scan_code == (0x36 + 0x80)) {
+        shiftPressed = 0;
+    } else if(scan_code <= 0x7F) {
+        buffer[curr++] = pressCodes[scan_code][shiftPressed];
+        curr = curr % 5;
+        printLatest();
+    }
 }
 
+static int i = 0;
+static int j = 0;
 void printLatest(){
     char toPrint = buffer[prev];
-    draw_char(toPrint, 10 , 100 , 0xeb8334);
+    draw_char(toPrint, 0+j , 0+i , 0xeb8334);
+    i+=8;
+
+    if(i >= 1024) {
+        i = 0;
+        j += 16;
+    }
+    if(j >= 768) {
+        j = 0;
+    }
 }

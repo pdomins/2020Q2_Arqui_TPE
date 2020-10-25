@@ -57,7 +57,7 @@ void draw_char(int character, int row, int col, int color){
         for(int j = 0; j < CHAR_WIDTH; j++) {
             unsigned int point = ((bitMap[i] >> j) & 0x01);
             if(point == 0) {
-                draw_pixel(row + i, col + CHAR_WIDTH - j, 0x0F0F0F);
+                draw_pixel(row + i, col + CHAR_WIDTH - j, 0x000000);
             } else {
                 draw_pixel(row + i, col + CHAR_WIDTH - j, color);
             }
