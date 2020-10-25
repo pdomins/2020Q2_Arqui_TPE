@@ -11,6 +11,7 @@ char *cpuVendor(char *result);
 int getSeconds();
 int getMinutes();
 int getHours();
+int getDay();
 
 int read_keyboard();
 

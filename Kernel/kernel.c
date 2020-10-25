@@ -6,6 +6,7 @@
 #include <videoDriver.h>
 
 #include <idtLoader.h>
+#include <timerDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -109,7 +110,12 @@ int main()
     //}
 
     draw_pixel(9,9,0xffffff);
-    draw_char('P', 10, 100, 0xeb8334);
+	char localTime[12];
+	getLocalTime(localTime);
+	for(int i = 0,j = 0; localTime[i]!='\0' ; i++, j+=8){
+		draw_char(localTime[i], 0,j,0x6FFFFF);
+	}
+	draw_char('P', 10, 100, 0xeb8334);
     draw_char('A', 10, 108, 0xc0eb34);
     draw_char('U', 10, 116, 0x34eb37);
     draw_char('L', 10, 124, 0x05ffe6);
@@ -117,7 +123,6 @@ int main()
 
     draw_char('<', 27, 124, 0xff0505);
     draw_char('3', 27, 132, 0xff0505);
-
 
 	while(1);
 

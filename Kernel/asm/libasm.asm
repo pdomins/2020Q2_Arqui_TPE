@@ -2,6 +2,7 @@ GLOBAL cpuVendor
 GLOBAL getSeconds
 GLOBAL getMinutes
 GLOBAL getHours
+GLOBAL getDay
 GLOBAL read_keyboard
 section .text
 	
@@ -48,6 +49,13 @@ getMinutes:
 getHours:
 	mov rax,0
 	mov al, 4
+	out 70h, al
+	in al, 71h
+	ret
+
+getDay:
+	mov rax,0
+	mov al, 7
 	out 70h, al
 	in al, 71h
 	ret
