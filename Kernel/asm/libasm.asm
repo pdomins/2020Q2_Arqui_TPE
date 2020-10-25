@@ -31,21 +31,21 @@ cpuVendor:
 ;---------------------------------------------------------
 ;	Real Time Clock and Memory (ports 70h & 71h)
 ;---------------------------------------------------------
-getSeconds
+getSeconds:
 	mov rax, 0
 	mov al, 0
 	out 70h, al
 	in al, 71h
 	ret
 
-getMinutes
+getMinutes:
 	mov rax,0
 	mov al, 2
 	out 70h, al
 	in al, 71h
 	ret
 
-getHours
+getHours:
 	mov rax,0
 	mov al, 4
 	out 70h, al
@@ -59,14 +59,3 @@ getHours
 
 ;---------------------------------------------------------
 
-
-kbFlag:  
-    mov rax,0
-	in al,0x64       
-    mov cl,al
-    and al,0x01       
-    cmp al,0
-    je loop
-    in al,0x60   
-
-    ret

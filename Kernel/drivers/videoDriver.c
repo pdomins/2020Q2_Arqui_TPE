@@ -51,18 +51,16 @@ struct vbe_mode_info_structure
 
 struct vbe_mode_info_structure * screen_data = 0x0000000000005C00; //VBEModeInfoBlock //(void*) 0x5C00 Por que? No hay pol que
 
-void draw_char(char character, int row, int col, int color){
-    char * bitMap = charBitmap((int) character);
+void draw_char(int character, int row, int col, int color){
+    unsigned char * bitMap = charBitmap(character);
     for(int i = 0; i < CHAR_HEIGHT; i++) {
         for(int j = 0; j < CHAR_WIDTH; j++) {
-            int pos = 1;
-            unsigned int point = (bitMap[i] & (pos)) >> j;
+            unsigned int point = ((bitMap[i] >> j) & 0x01);
             if(point == 0) {
-                draw_pixel(row + i, col + j, 0x000000);
+                draw_pixel(row + i, col + CHAR_WIDTH - j, 0x0F0F0F);
             } else {
-                draw_pixel(row + i, col + j, color);
+                draw_pixel(row + i, col + CHAR_WIDTH - j, color);
             }
-            pos *= 2;
         }
     }
 }
