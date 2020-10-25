@@ -1,6 +1,6 @@
 #include <time.h>
 #include <stdint.h>
-
+#include <keyboardDriver.h>
 #include <videoDriver.h>
 
 static void int_20();
@@ -24,7 +24,6 @@ void int_20() {
 }
 
 void int_21(){
-	for(int i = 1; i < 128; i++) {
-    	draw_pixel(i, i, 0xffffff);
-    }
+	keyboard_management();
+	printLatest();
 }

@@ -2,7 +2,7 @@ GLOBAL cpuVendor
 GLOBAL getSeconds
 GLOBAL getMinutes
 GLOBAL getHours
-
+GLOBAL read_keyboard
 section .text
 	
 cpuVendor:

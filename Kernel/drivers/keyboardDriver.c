@@ -1,5 +1,8 @@
 #include <keyboardDriver.h>
 #include <lib.h>
+
+#include <videoDriver.h>
+
 #define KEYS 59 // o 60?
 #define MIN_SCAN 0 MAX_SCAN 59 
 char buffer[5];
@@ -20,4 +23,12 @@ static char pressCodes[KEYS][2] = {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'},
 
 void keyboard_management(){
     int scan_code = read_keyboard();
+    prev = curr;
+    buffer[curr++] = pressCodes[scan_code][0];
+    curr = curr % 5;
+}
+
+void printLatest(){
+    char toPrint = buffer[prev];
+    draw_char(toPrint, 10 , 100 , 0xeb8334);
 }
