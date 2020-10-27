@@ -15,4 +15,9 @@ int getDay();
 
 int read_keyboard();
 
+/*
+Esto se borra luego, bebe.
+*/
+void call80(int call, int len, char* str);
+
 #endif

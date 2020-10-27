@@ -97,7 +97,6 @@ int main()
 	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 	ncNewline();
 	ncNewline();
-
 	ncPrint("  Sample data module at 0x");
 	ncPrintHex((uint64_t)sampleDataModuleAddress);
 	ncNewline();
@@ -115,15 +114,10 @@ int main()
 	for(int i = 0,j = 0; localTime[i]!='\0' ; i++, j+=8){
 		draw_char(localTime[i], 0,j,0x6FFFFF);
 	}
-	draw_char('P', 10, 100, 0xeb8334);
-    draw_char('A', 10, 108, 0xc0eb34);
-    draw_char('U', 10, 116, 0x34eb37);
-    draw_char('L', 10, 124, 0x05ffe6);
-    draw_char('A', 10, 132, 0x7605ff);
+    draw_char(':', 27, 124, 0xff0505); draw_char('D', 27, 132, 0xff0505);
 
-    draw_char('<', 27, 124, 0xff0505);
-    draw_char('3', 27, 132, 0xff0505);
-
+	char *toPrint;
+	call80(1,1,toPrint);
 	while(1);
 
 	ncPrint("[Finished]");

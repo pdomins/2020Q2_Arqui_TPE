@@ -76,22 +76,12 @@ void keyboard_management(){
         }
         buffer[curr++] = pressCodes[scan_code][secondChar];
         curr = curr % 5;
-        printLatest();
     }
 }
 
-static int i = 0;
-static int j = 0;
-void printLatest(){
-    char toPrint = buffer[prev];
-    draw_char(toPrint, 0+j , 0+i , 0xeb8334);
-    i+=8;
-
-    if(i >= 1024) {
-        i = 0;
-        j += 16;
-    }
-    if(j >= 768) {
-        j = 0;
-    }
+int leer = 0;
+int readBuffer(char * toWrite){
+    toWrite[0] = buffer[leer];
+    leer=(leer+1)%5;
+    return 1; 
 }

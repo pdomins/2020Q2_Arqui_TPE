@@ -4,8 +4,14 @@ GLOBAL getMinutes
 GLOBAL getHours
 GLOBAL getDay
 GLOBAL read_keyboard
+
+GLOBAL call80
 section .text
 	
+call80:
+	int 80h
+	ret
+
 cpuVendor:
 	push rbp
 	mov rbp, rsp
