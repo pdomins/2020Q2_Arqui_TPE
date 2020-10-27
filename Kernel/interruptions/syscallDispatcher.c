@@ -1,18 +1,22 @@
 #include <stdint.h>
 #include <videoDriver.h>
 #include <keyboardDriver.h>
+#include <timerDriver.h>
 
 static int readHandler();
 static int writeHandler();
 
 
-void syscallDispatcher(uint64_t call, uint64_t rsi, uint64_t rdx ) {
+void syscallDispatcher(uint64_t call, uint64_t first_parameter, uint64_t second_parameter) {
 	switch (call) {
 		case 0:
-			readHandler((int)rsi, (char*) rdx); //0 read
+			readHandler((int)first_parameter, (char*) second_parameter); //0 read
 			break;
 		case 1:
-			writeHandler((int)rsi, (char*) rdx); //1 write
+			writeHandler((int)first_parameter, (char*) second_parameter); //1 write
+			break;
+		case 10: 
+			getTime((char*) first_parameter);
 			break;
 	}
 	return;
@@ -28,3 +32,6 @@ int writeHandler(int length, char* toWrite){
     return 0;
 }
 
+void getTime(char* time){
+	getLocalTime(time);
+}

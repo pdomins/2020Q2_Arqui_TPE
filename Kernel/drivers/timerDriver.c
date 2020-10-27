@@ -13,18 +13,11 @@ void getLocalTime(char* local_time){ //returns hh:mm:ss
 
     local_time[pos++] = ((day_bcd & DEC)>>4) + '0';
     local_time[pos++] = (day_bcd & UNI) + '0';
-    local_time[pos++] = '-';
-
     local_time[pos++] = ((hour_bcd & DEC)>>4) + '0';
     local_time[pos++] = (hour_bcd & UNI) + '0';
-    local_time[pos++] = ':';
-    
     local_time[pos++] = ((min_bcd & DEC)>>4) + '0';
     local_time[pos++] = (min_bcd & UNI) + '0';
-    local_time[pos++] = ':';
-    
     local_time[pos++] = ((sec_bcd & DEC)>>4) + '0';
     local_time[pos++] = (sec_bcd & UNI) + '0';
-    
     local_time[pos] = '\0';
 }

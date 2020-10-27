@@ -11,7 +11,7 @@ section .text
 call80:
 	int 80h
 	ret
-
+;---------------------------------------------------------
 cpuVendor:
 	push rbp
 	mov rbp, rsp
@@ -34,6 +34,8 @@ cpuVendor:
 	mov rsp, rbp
 	pop rbp
 	ret
+;---------------------------------------------------------
+
 
 ;---------------------------------------------------------
 ;	Real Time Clock and Memory (ports 70h & 71h)
@@ -70,7 +72,7 @@ getDay:
 ;---------------------------------------------------------
 ;	Keyboard Controller (ports 60h & 64h)
 ;---------------------------------------------------------
-read_keyboard
+read_keyboard:
 	mov rax, 0
 	in al,0x60   
 	ret

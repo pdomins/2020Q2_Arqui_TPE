@@ -1,10 +1,24 @@
 /* _loader.c */
 #include <stdint.h>
 
+
+extern void sysRead(int length, char* read_array);
+extern void sysWrite(int length, char* write_array);
+extern void sysTime(char* time_array);
+
 extern char bss;
 extern char endOfBinary;
 
-int main();
+int main(){
+	char text [1];
+	sysRead(1, text);
+	sysWrite(1, text);
+
+	char time[9];
+	sysTime(time);
+	sysWrite(8,time);
+	return 0;
+}
 
 void * memset(void * destiny, int32_t c, uint64_t length);
 
