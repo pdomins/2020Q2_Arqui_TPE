@@ -1,11 +1,12 @@
-GLOBAL getTime
+GLOBAL sysTime
 GLOBAL sysRead
+GLOBAL sysWrite
 ;------------------------------------------------------------
 ;                       WONDERLAND
 ;------------------------------------------------------------
 
 ; NIIIIIIIIIIIISAN
-
+section .text
 ;------------------------------------------------------------
 ; void sysTime(char* time_array)
 ; devuelve la hora local en formato ddhhmmss
@@ -35,7 +36,7 @@ sysRead:
 sysWrite:
     mov rdx, rsi    ;paso el vector a rdx
     mov rsi, rdi    ; paso la longitud a rsi
-    mov rdi, 0
+    mov rdi, 1
     int 80h
     ret
 ;------------------------------------------------------------

@@ -24,13 +24,7 @@ void irqDispatcher(uint64_t irq) {
 void int_20() {
 	timer_handler();
 }
-static int par = 0;
+
 void int_21(){
 	keyboard_management();
-	char character [1];
-	if(par%2==0) {
-		call80(0, 1, character);
-		call80(1, 1, character);
-	}
-	par++;
 }

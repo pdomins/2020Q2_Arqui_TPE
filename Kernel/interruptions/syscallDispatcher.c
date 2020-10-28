@@ -26,9 +26,12 @@ int readHandler(int length, char* toRead){
     readBuffer(toRead);
     return 0;
 }
-
+static int j = 0;
 int writeHandler(int length, char* toWrite){
-    draw_char(*toWrite, 15,15, 0x1FFFFF);
+	for(int i = 0; i < length; i++) {
+    	draw_char(toWrite[i], 15, 15 + (j++) * 8, 0x1FFFFF);
+
+	}
     return 0;
 }
 

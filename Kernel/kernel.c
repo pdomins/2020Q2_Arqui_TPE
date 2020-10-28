@@ -85,17 +85,17 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-int main()
-{	
+int main(){	
 	load_idt();
-	ncPrint("[Kernel Main]");
+	/*ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
+	*/
 	ncPrint("  Calling the sample code module returned: ");
 	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
+	/*ncNewline();
 	ncNewline();
 	ncPrint("  Sample data module at 0x");
 	ncPrintHex((uint64_t)sampleDataModuleAddress);
@@ -104,22 +104,9 @@ int main()
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
-	//for(int i = 1; i < 512; i++) {
-    //    draw_pixel(i, i, 0x97f0ee);
-    //}
-
-    draw_pixel(9,9,0xffffff);
-	char localTime[12];
-	getLocalTime(localTime);
-	for(int i = 0,j = 0; localTime[i]!='\0' ; i++, j+=8){
-		draw_char(localTime[i], 0,j,0x6FFFFF);
-	}
-    draw_char(':', 27, 124, 0xff0505); draw_char('D', 27, 132, 0xff0505);
-
-	char *toPrint;
-	call80(1,1,toPrint);
-	while(1);
+//	while(1);
 
 	ncPrint("[Finished]");
+	*/
     return 0;
 }
