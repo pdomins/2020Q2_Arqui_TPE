@@ -5,6 +5,7 @@
 
 static int readHandler();
 static int writeHandler();
+static void getDate();
 
 
 void syscallDispatcher(uint64_t call, uint64_t first_parameter, uint64_t second_parameter) {
@@ -16,7 +17,7 @@ void syscallDispatcher(uint64_t call, uint64_t first_parameter, uint64_t second_
 			writeHandler((int)first_parameter, (char*) second_parameter); //1 write
 			break;
 		case 10: 
-			getTime((char*) first_parameter);
+			getTime((date) first_parameter);
 			break;
 	}
 	return;
@@ -26,6 +27,8 @@ int readHandler(int length, char* toRead){
     readBuffer(toRead);
     return 0;
 }
+
+
 static int j = 0;
 int writeHandler(int length, char* toWrite){
 	for(int i = 0; i < length; i++) {
@@ -35,6 +38,6 @@ int writeHandler(int length, char* toWrite){
     return 0;
 }
 
-void getTime(char* time){
-	getLocalTime(time);
+void getTime(date myDate){
+	getLocalDate(myDate);
 }

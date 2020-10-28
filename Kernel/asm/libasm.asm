@@ -3,6 +3,8 @@ GLOBAL getSeconds
 GLOBAL getMinutes
 GLOBAL getHours
 GLOBAL getDay
+GLOBAL getMonth
+GLOBAL getYear
 GLOBAL read_keyboard
 
 GLOBAL call80
@@ -64,6 +66,20 @@ getHours:
 getDay:
 	mov rax,0
 	mov al, 7
+	out 70h, al
+	in al, 71h
+	ret
+
+getMonth:
+	mov rax,0
+	mov al, 8
+	out 70h, al
+	in al, 71h
+	ret
+
+getYear:
+	mov rax,0
+	mov al, 9
 	out 70h, al
 	in al, 71h
 	ret

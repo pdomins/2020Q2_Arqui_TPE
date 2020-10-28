@@ -49,7 +49,7 @@ struct vbe_mode_info_structure
     uint8_t reserved1[206];
 } __attribute__((packed));
 
-struct vbe_mode_info_structure * screen_data = 0x0000000000005C00; //VBEModeInfoBlock //(void*) 0x5C00 Por que? No hay pol que
+struct vbe_mode_info_structure * screen_data = (void*) 0x5C00; //VBEModeInfoBlock //(void*) 0x5C00 Por que? No hay pol que
 
 void draw_char(int character, int row, int col, int color){
     unsigned char * bitMap = charBitmap(character);
@@ -66,7 +66,7 @@ void draw_char(int character, int row, int col, int color){
 }
 
 void draw_pixel(int row, int col, int color){
-    char* current_position = screen_data->framebuffer + 3 * (row * screen_data->width + col);
+    char* current_position = (char*)(uint64_t)screen_data->framebuffer + 3 * (row * screen_data->width + col);
 
     int blue = color & 0xFF;
     int green = (color >> 8) & 0xFF;

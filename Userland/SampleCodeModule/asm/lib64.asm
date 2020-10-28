@@ -1,6 +1,7 @@
 GLOBAL sysTime
 GLOBAL sysRead
 GLOBAL sysWrite
+
 ;------------------------------------------------------------
 ;                       WONDERLAND
 ;------------------------------------------------------------
@@ -9,7 +10,7 @@ GLOBAL sysWrite
 section .text
 ;------------------------------------------------------------
 ; void sysTime(char* time_array)
-; devuelve la hora local en formato ddhhmmss
+; devuelve la hora y la fecha local dentro de un struct
 ;------------------------------------------------------------
 sysTime:
     mov rsi, rdi
@@ -17,6 +18,7 @@ sysTime:
     int 80h
     ret
 ;------------------------------------------------------------
+
 
 ;------------------------------------------------------------
 ; void sysRead(int length, char* time_array)

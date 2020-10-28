@@ -4,20 +4,29 @@
 #define UNI 15
 #define DEC 240
 
-void getLocalTime(char* local_time){ //returns hh:mm:ss
-    int pos = 0;
+void getLocalDate(date myDate){
     int sec_bcd = getSeconds();
     int min_bcd = getMinutes();
     int hour_bcd = getHours();
     int day_bcd = getDay();
+    int month_bcd = getMonth();
+    int year_bcd = getYear();
 
-    local_time[pos++] = ((day_bcd & DEC)>>4) + '0';
-    local_time[pos++] = (day_bcd & UNI) + '0';
-    local_time[pos++] = ((hour_bcd & DEC)>>4) + '0';
-    local_time[pos++] = (hour_bcd & UNI) + '0';
-    local_time[pos++] = ((min_bcd & DEC)>>4) + '0';
-    local_time[pos++] = (min_bcd & UNI) + '0';
-    local_time[pos++] = ((sec_bcd & DEC)>>4) + '0';
-    local_time[pos++] = (sec_bcd & UNI) + '0';
-    local_time[pos] = '\0';
+    myDate->day = ((day_bcd & DEC)>>4)*10;
+    myDate->day+=(day_bcd & UNI); 
+
+    myDate->month = ((month_bcd & DEC)>>4)*10;
+    myDate->month+=(month_bcd & UNI); 
+    
+    myDate->year = ((year_bcd & DEC)>>4)*10;
+    myDate->year+=(year_bcd & UNI); 
+
+    myDate->seconds = ((sec_bcd & DEC)>>4)*10;
+    myDate->seconds+=(sec_bcd & UNI); 
+
+    myDate->minutes = ((min_bcd & DEC)>>4)*10;
+    myDate->minutes+=(min_bcd & UNI); 
+
+    myDate->hour = ((hour_bcd & DEC)>>4)*10;
+    myDate->hour+=(hour_bcd & UNI); 
 }
