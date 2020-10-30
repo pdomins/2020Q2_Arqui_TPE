@@ -22,5 +22,25 @@ void dateToString(date myDate, char * buffer, char separator, int length) {
 	buffer[14] = ':';
     itoa(myDate->seconds, buffer + 15, 2);
     buffer[18] = '\0';
+}
 
+char* strcpy(char *destination, char *source){
+    char *start = destination;
+
+    while(*source != '\0'){
+        *destination = *source;
+        destination++;
+        source++;
+    }
+
+    *destination = '\0';
+    return start;
+}
+
+int strlen(char* string){
+    int count = 0;
+    while(string[count]!='\0'){
+        count++;
+    }
+    return count;
 }

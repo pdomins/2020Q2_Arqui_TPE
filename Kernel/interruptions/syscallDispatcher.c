@@ -2,22 +2,23 @@
 #include <videoDriver.h>
 #include <keyboardDriver.h>
 #include <timerDriver.h>
+#include <libString.h>
 
-static int readHandler();
-static int writeHandler();
-static void getDate();
+int readHandler(int length, char* toRead);
+int writeHandler(int length, char* toWrite, int row, int col);
+void getTime(date myDate);
 
 
-void syscallDispatcher(uint64_t call, uint64_t first_parameter, uint64_t second_parameter) {
+void syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP) {
 	switch (call) {
 		case 0:
-			readHandler((int)first_parameter, (char*) second_parameter); //0 read
+			readHandler((int)firstP, (char*) secondP); //0 read
 			break;
 		case 1:
-			writeHandler((int)first_parameter, (char*) second_parameter); //1 write
+			writeHandler((int)firstP, (char*) secondP,(int) thirdP, (int) fourthP); //1 write
 			break;
 		case 10: 
-			getTime((date) first_parameter);
+			getTime((date) firstP);
 			break;
 	}
 	return;
@@ -28,13 +29,8 @@ int readHandler(int length, char* toRead){
     return 0;
 }
 
-
-static int j = 0;
-int writeHandler(int length, char* toWrite){
-	for(int i = 0; i < length; i++) {
-    	draw_char(toWrite[i], 15, 15 + (j++) * 8, 0x1FFFFF);
-
-	}
+int writeHandler(int length, char* toWrite, int row, int col){
+	printStringFrom(toWrite,row,col);
     return 0;
 }
 

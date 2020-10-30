@@ -2,12 +2,24 @@ GLOBAL sysTime
 GLOBAL sysRead
 GLOBAL sysWrite
 
+GLOBAL _syscall
+
 ;------------------------------------------------------------
 ;                       WONDERLAND
 ;------------------------------------------------------------
 
 ; NIIIIIIIIIIIISAN
 section .text
+
+;------------------------------------------------------------
+;
+;
+;------------------------------------------------------------
+_syscall:
+    int 80h;
+    ret
+
+
 ;------------------------------------------------------------
 ; void sysTime(char* time_array)
 ; devuelve la hora y la fecha local dentro de un struct

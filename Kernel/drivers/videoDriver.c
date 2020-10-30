@@ -1,7 +1,9 @@
 #include <stdint.h>
 #include <videoDriver.h>
 #include <font.h>
+#include <lib.h>
 
+#define BACKGROUND_COLOUR 0x000000
 
 unsigned int bg_color = 0x0;
 unsigned int f_color = 0xFFFFFF;
@@ -10,8 +12,10 @@ unsigned int SCREEN_WIDTH = 1024;
 unsigned int SCREEN_HEIGHT = 768;
 unsigned int SCREEN_bPP = 3; 
 
-struct vbe_mode_info_structure
-{
+static unsigned int xPos = 0;
+static unsigned int yPos = 0;
+
+struct vbe_mode_info_structure{
     uint16_t attributes;  // deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
     uint8_t window_a;      // deprecated
     uint8_t window_b;      // deprecated
@@ -49,23 +53,66 @@ struct vbe_mode_info_structure
     uint8_t reserved1[206];
 } __attribute__((packed));
 
-struct vbe_mode_info_structure * screen_data = (void*) 0x5C00; //VBEModeInfoBlock //(void*) 0x5C00 Por que? No hay pol que
+struct vbe_mode_info_structure * screen_data = (void*) 0x5C00; //VBEModeInfoBlock
+/*
+    uint16_t pitch;           // number of bytes per horizontal line
+    uint16_t width;           // width in pixels
+    uint16_t height;       // height in pixels
+*/
 
-void draw_char(int character, int row, int col, int color){
+void checkPosition();
+
+void draw_char_from(int character, int row, int col, int color){
+    while (row%CHAR_HEIGHT!=0){ //si la direccion que me paso el usuario no esta alineada con el tamano de caracteres que estamos utilizando
+       row++;
+    }
+    while (col%CHAR_WIDTH!=0){
+       col++;
+    }
     unsigned char * bitMap = charBitmap(character);
     for(int i = 0; i < CHAR_HEIGHT; i++) {
         for(int j = 0; j < CHAR_WIDTH; j++) {
             unsigned int point = ((bitMap[i] >> j) & 0x01);
             if(point == 0) {
-                draw_pixel(row + i, col + CHAR_WIDTH - j, 0x000000);
+                drawPixel(row + i, col + CHAR_WIDTH - j, BACKGROUND_COLOUR);
             } else {
-                draw_pixel(row + i, col + CHAR_WIDTH - j, color);
+                //if (row + i > screen_data -> width) 
+                //if ( col + CHAR_WIDTH - j > screen_data -> height)
+                
+                drawPixel(row + i, col + CHAR_WIDTH - j, color);
             }
         }
     }
 }
 
-void draw_pixel(int row, int col, int color){
+  
+
+void draw_char(int character, int color){
+    draw_char_from(character, yPos, xPos, color);
+    xPos += CHAR_WIDTH;
+
+    checkPosition();
+}
+
+void checkPosition() {
+    if(xPos >= screen_data->width) {
+        xPos = 0;
+        yPos += CHAR_HEIGHT;
+    }
+    if(yPos >= screen_data->height) {
+        //Proximamente scrolleara... tal vez
+        yPos = screen_data->height - CHAR_HEIGHT;
+        int length = (screen_data->width * screen_data->height * 3) - (3 * screen_data->width); 
+        memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + 3 * screen_data->width), length);
+        for(int i = 0; i < screen_data->width; i++) {
+            for(int j = yPos; j < screen_data->height; j++) {
+                drawPixel(j,i,BACKGROUND_COLOUR);
+            }
+        }
+    }
+}
+
+void drawPixel(int row, int col, int color){
     char* current_position = (char*)(uint64_t)screen_data->framebuffer + 3 * (row * screen_data->width + col);
 
     int blue = color & 0xFF;

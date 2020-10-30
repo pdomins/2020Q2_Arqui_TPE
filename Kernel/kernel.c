@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <string.h>
+//#include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
@@ -7,6 +7,8 @@
 
 #include <idtLoader.h>
 #include <timerDriver.h>
+
+#include<libString.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -104,7 +106,7 @@ int main(){
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
-//	while(1);
+	while(1);
 
 	ncPrint("[Finished]");
 	*/
