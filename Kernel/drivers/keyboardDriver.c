@@ -5,7 +5,7 @@
 
 #define KEYS 59 // o 60? continuara... TAL VEZ? :D
 #define MIN_SCAN 0
-#define MAX_SCAN 59 
+#define MAX_SCAN 59
 
 #define ESC 0x01
 #define BACKSPACE 0x0E
@@ -21,18 +21,18 @@
 
 #define SPECIAL_KEY (ESC||BACKSPACE||TAB||ENTER||L_CTRL||L_SHIFT||R_SHIFT||L_ALT||CAPS_LOCK)
 
-#define IS_ALPHA(c) c >= 'a' && c <= 'z'  
+#define IS_ALPHA(c) c >= 'a' && c <= 'z'
 
 
 char buffer[5];
 int prev = 0;
-int curr = 0; 
-static char pressCodes[KEYS][2] = 
+int curr = 0;
+static char pressCodes[KEYS][2] =
 {{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'},
-{'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'}, 
+{'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'},
 {'8', '*'}, {'9', '('}, {'0', ')'}, {'-', '_'}, {'=', '+'},
 {'\b','\b'}, {'\t','\t'}, {'q', 'Q'}, {'w', 'W'},{'e', 'E'},
-{'r', 'R'}, {'t', 'T'}, {'y', 'Y'}, {'u', 'U'}, {'i', 'I'}, 
+{'r', 'R'}, {'t', 'T'}, {'y', 'Y'}, {'u', 'U'}, {'i', 'I'},
 {'o', 'O'}, {'p', 'P'}, {'[', '{'}, {']', '}'}, {'\n', '\n'},
 {0, 0}, {'a', 'A'}, {'s', 'S'}, {'d', 'D'}, {'f', 'F'},
 {'g', 'G'}, {'h', 'H'}, {'j', 'J'}, {'k', 'K'}, {'l', 'L'},
@@ -56,16 +56,16 @@ void keyboard_management(){
     switch(scan_code) {
         case L_SHIFT:
         case R_SHIFT:
-            shiftPressed = 1; 
+            shiftPressed = 1;
             break;
         case L_SHIFT + RELEASED_KEY:
         case R_SHIFT + RELEASED_KEY:
-            shiftPressed = 0; 
+            shiftPressed = 0;
             break;
         case CAPS_LOCK:
             blockMayus = blockMayus? 0:1;
             break;
-        case L_CTRL:   
+        case L_CTRL:
         case L_ALT:
             break;
     }

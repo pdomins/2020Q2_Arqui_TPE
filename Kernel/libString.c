@@ -53,7 +53,7 @@ void printOnBaseN(uint64_t value, int base){
 
 void printInt(int number){
     if (number < 0){
-        putChar("-");
+        putChar('-');
     }
     printOnBaseN(number,10);
 }
