@@ -102,8 +102,17 @@ void checkPosition() {
     if(yPos >= screen_data->height) {
         //Proximamente scrolleara... tal vez
         yPos = screen_data->height - CHAR_HEIGHT;
-        int length = (screen_data->width * screen_data->height * 3) - (3 * screen_data->width); 
-        memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + 3 * screen_data->width), length);
+        int length = (screen_data->width * screen_data->height * 3) - ((3 * screen_data->width)*16);
+        memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + (3 * screen_data->width)*16), length);
+//        char* current_position = (uint64_t)screen_data->framebuffer;
+//        char* from = (uint64_t)screen_data->framebuffer + (screen_data->width * 3);
+//        char* end = (uint64_t)screen_data->framebuffer + (screen_data->width * screen_data->height * 3);
+//        while(from != end) {
+//            *current_position = *from;
+//            current_position++;
+//            from++;
+//        }
+
         for(int i = 0; i < screen_data->width; i++) {
             for(int j = yPos; j < screen_data->height; j++) {
                 drawPixel(j,i,BACKGROUND_COLOUR);
