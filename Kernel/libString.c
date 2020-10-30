@@ -72,7 +72,7 @@ void println(char* string){
     {
         draw_char(string[i],0x1FFFFF);
     }
-    draw_char("\n", 0x1FFFFF);
+    printString("\n");
 }
 
 void putCharColor(char character, int colour){
