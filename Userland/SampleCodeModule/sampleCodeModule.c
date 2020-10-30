@@ -19,11 +19,14 @@ int main() {
 	print(" Todas? ");
 	print(" Estamos probando el salta dee linea automatico, si no funciona me mato xdxdxd");
 	print("Todas.");*/
-	print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-	for(int i = 0; i < 6143; i++) {
-		print("A");
+	char letra [2];
+	letra[1]= 0;
+	while(1){
+		char i = getChar();
+		if(i != 0){
+			*letra = i;
+			print(letra);
+		}
 	}
-	print("ESTA ES LA ULTIMA LINEA");
-	printFromPosition("Y VOLO Y YO VOLE Y ME HIZO VOLAA", 0,0);
 	return 0;
 }

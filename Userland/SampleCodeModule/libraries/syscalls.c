@@ -7,8 +7,8 @@
 #define WRITE_SYSCALL 1
 #define PRINTLN_SYSCALL 2
 
-char getChar(){
-    char buffer [1];
+char getChar(int lengt){
+    char buffer [1] = {0};
     _syscall(READ_SYSCALL, 1, buffer);
     return *buffer;
 }

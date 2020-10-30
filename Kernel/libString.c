@@ -53,7 +53,7 @@ void printOnBaseN(uint64_t value, int base){
 
 void printInt(int number){
     if (number < 0){
-        putChar("-");
+        putChar('-');
     }
     printOnBaseN(number,10);
 }
@@ -72,7 +72,7 @@ void println(char* string){
     {
         draw_char(string[i],0x1FFFFF);
     }
-    //mover el puntero a la proxima linea draw_char('\n)?
+    draw_char("\n", 0x1FFFFF);
 }
 
 void putCharColor(char character, int colour){

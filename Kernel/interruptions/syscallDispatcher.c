@@ -25,7 +25,7 @@ void syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_
 }
 
 int readHandler(int length, char* toRead){
-    readBuffer(toRead);
+    readBuffer(length, toRead);
     return 0;
 }
 

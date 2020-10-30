@@ -23,8 +23,9 @@
 
 #define IS_ALPHA(c) c >= 'a' && c <= 'z'  
 
+#define BUFFER_SIZE 10
 
-char buffer[5];
+char buffer[BUFFER_SIZE] = {0};
 int prev = 0;
 int curr = 0; 
 static char pressCodes[KEYS][2] = 
@@ -69,19 +70,27 @@ void keyboard_management(){
         case L_ALT:
             break;
     }
+    
     if(scan_code <= MAX_PRESSED_KEY && !isSpecialKey(scan_code)) {
         int secondChar = shiftPressed;
         if(IS_ALPHA(pressCodes[scan_code][0])){
             secondChar = blockMayus ? 1 - shiftPressed: shiftPressed;
         }
         buffer[curr++] = pressCodes[scan_code][secondChar];
-        curr = curr % 5;
+        curr = curr % BUFFER_SIZE;
     }
 }
 
+
 int leer = 0;
-int readBuffer(char * toWrite){
-    toWrite[0] = buffer[leer];
-    leer=(leer+1)%5;
-    return 1; 
+int readBuffer(int length, char * toWrite){
+    for(int i = 0 ; i < length/* || enter */ ; i++ ){
+        if(buffer[leer] == 0){
+            return i;
+        }
+        toWrite[i] = buffer[leer];
+        buffer[leer] = 0;
+        leer = (leer+1) % BUFFER_SIZE;
+    }
+    return length; 
 }
