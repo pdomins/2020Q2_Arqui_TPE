@@ -3,36 +3,56 @@
 #include<syscalls.h>
 #define CHUNK 200
 
+int hasProgram(char * input);
+
 static char ** programs;
-static int prueba = 0;
 void initShell(){
     char *initGreet="user@TPArqui:~$ ";
     char c;
-    int contentLength = 0, contentSize = CHUNK;
     while(1 /*|| excepcion*/){
         printColor(initGreet,0x22ab00);
-        char *content = {0};
+        char content[CHUNK] = {0};
+        int contentLength = 0;
         while( (c = getChar()) != '\n'){
             if(c != 0){
-                content[contentLength++] = c;
+                switch(c){
+                    case '\b':
+                            if(contentLength > 0){
+                                print("\b");
+                                content[--contentLength] = 0;
+                            }
+                            break;
+                    default:
+                        if (contentLength<30){
+                        content[contentLength++] = c;
+                        char toPrint[2]={0};
+                        toPrint[0]=c;
+                        print(toPrint);    
+                        }else print("que tanto necesitas imprimir negry?"); 
+                }
+            }
 
-                char toPrint[2]={0};
-                toPrint[0]=c;
-                print(toPrint);
+            
+        }
+        if(contentLength > 0){
+            if(hasProgram(content)){
+                println("");
+            }
+            else{
+                println(content);
+                println(": command not found");
             }
         }
-        if(hasProgram(content)){
+        else
+        {
             println("");
         }
-        else{
-            println(content);
-            println(": command not found");
-        }              
+                      
         contentLength = 0;
     }
 }
 
-int hasProgram(char * input){
+int hasProgram(char *input){
     //if es llamada al ajedrez
-    return prueba ? 0:1;
+    return 1;
 }

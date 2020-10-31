@@ -46,7 +46,7 @@ static int shiftPressed = 0;
 static int blockMayus = 0;
 
 int isSpecialKey(int scanCode){
-    return scanCode == ESC || scanCode == BACKSPACE ||/* scanCode == ENTER ||*/ scanCode == L_CTRL ||
+    return scanCode == ESC || /*scanCode == BACKSPACE ||*//* scanCode == ENTER ||*/ scanCode == L_CTRL ||
             scanCode == L_SHIFT || scanCode == R_SHIFT || scanCode == L_ALT || scanCode == CAPS_LOCK;
 }
 
