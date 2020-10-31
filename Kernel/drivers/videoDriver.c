@@ -166,7 +166,7 @@ void clearScreen() {
 }
 
 void clearLine(int yPos) {
-    for(int i = yPos; i < CHAR_HEIGHT; i++) {
+    for(int i = yPos; i < yPos + CHAR_HEIGHT; i++) {
         for(int j = 0; j < screen_data->width; j++) {
             drawPixel(i, j, BACKGROUND_COLOUR);
         }

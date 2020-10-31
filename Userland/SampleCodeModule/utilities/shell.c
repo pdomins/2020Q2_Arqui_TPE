@@ -23,12 +23,12 @@ void initShell(){
                             }
                             break;
                     default:
-                        if (contentLength<30){
+                       // if (contentLength<30){
                         content[contentLength++] = c;
                         char toPrint[2]={0};
                         toPrint[0]=c;
                         print(toPrint);    
-                        }else print("que tanto necesitas imprimir negry?"); 
+                   // }
                 }
             }
 
