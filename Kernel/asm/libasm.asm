@@ -7,12 +7,8 @@ GLOBAL getMonth
 GLOBAL getYear
 GLOBAL read_keyboard
 
-GLOBAL call80
 section .text
 	
-call80:
-	int 80h
-	ret
 ;---------------------------------------------------------
 cpuVendor:
 	push rbp

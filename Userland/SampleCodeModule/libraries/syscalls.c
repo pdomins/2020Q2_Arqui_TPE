@@ -7,15 +7,19 @@
 #define WRITE_SYSCALL 1
 #define PRINTLN_SYSCALL 2
 
-char getChar(int lengt){
+char getChar(){
     char buffer [1] = {0};
     _syscall(READ_SYSCALL, 1, buffer);
     return *buffer;
 }
+void printColor(char *buffer, int colour){
+     int length = strlen(buffer);
+    _syscall(WRITE_SYSCALL, length, buffer,-1,-1,colour);
+}
 
 void print(char * buffer) {
     int length = strlen(buffer);
-    _syscall(WRITE_SYSCALL, length, buffer,-1,-1);
+    _syscall(WRITE_SYSCALL, length, buffer,-1,-1,-1);
 }
 void printFromPosition(char* buffer, int row, int col){
     int length = strlen(buffer);

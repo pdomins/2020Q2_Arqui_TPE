@@ -1,5 +1,6 @@
 #include <string.h>
 #include <types.h>
+#include <syscalls.h>
 
 void itoa(int value, char* buffer, int length){
     for (int i = 0; i < length; i++){
@@ -43,4 +44,9 @@ int strlen(char* string){
         count++;
     }
     return count;
+}
+
+void println(char *toPrint){
+    print(toPrint);
+    print("\n");
 }

@@ -61,8 +61,28 @@ struct vbe_mode_info_structure * screen_data = (void*) 0x5C00; //VBEModeInfoBloc
 */
 
 void checkPosition();
+void shift();
+void clearLine(int yPos);
 
 void draw_char_from(int character, int row, int col, int color){
+    if(character == '\n') {
+        xPos = 0;
+        yPos += CHAR_HEIGHT;
+        checkPosition;
+        return;
+    }
+    if(character == '\b') {
+        if(xPos == 0 && yPos == 0) {
+            return;
+        }
+        xPos -= CHAR_WIDTH;
+        draw_char(" ", 0x000000);
+        xPos -= CHAR_WIDTH;
+        if(xPos == 0) {
+            yPos -= CHAR_HEIGHT;
+        }
+        return;
+    }
     while (row%CHAR_HEIGHT!=0){ //si la direccion que me paso el usuario no esta alineada con el tamano de caracteres que estamos utilizando
        row++;
     }
@@ -83,13 +103,12 @@ void draw_char_from(int character, int row, int col, int color){
             }
         }
     }
+    xPos += CHAR_WIDTH;
 }
-
-  
 
 void draw_char(int character, int color){
     draw_char_from(character, yPos, xPos, color);
-    xPos += CHAR_WIDTH;
+    
 
     checkPosition();
 }
@@ -100,24 +119,8 @@ void checkPosition() {
         yPos += CHAR_HEIGHT;
     }
     if(yPos >= screen_data->height) {
-        //Proximamente scrolleara... tal vez
         yPos = screen_data->height - CHAR_HEIGHT;
-        int length = (screen_data->width * screen_data->height * 3) - ((3 * screen_data->width)*16);
-        memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + (3 * screen_data->width)*16), length);
-//        char* current_position = (uint64_t)screen_data->framebuffer;
-//        char* from = (uint64_t)screen_data->framebuffer + (screen_data->width * 3);
-//        char* end = (uint64_t)screen_data->framebuffer + (screen_data->width * screen_data->height * 3);
-//        while(from != end) {
-//            *current_position = *from;
-//            current_position++;
-//            from++;
-//        }
-
-        for(int i = 0; i < screen_data->width; i++) {
-            for(int j = yPos; j < screen_data->height; j++) {
-                drawPixel(j,i,BACKGROUND_COLOUR);
-            }
-        }
+        shift();
     }
 }
 
@@ -135,3 +138,43 @@ void drawPixel(int row, int col, int color){
     *current_position = red;
     //current_position++;
 }
+
+void drawMatrix(int** matrix, int row, int col, int rows, int columns) {
+    if(row < 0 || col < 0 || row + rows > screen_data->height || col + columns > screen_data->width) {
+        //Mostrar mensaje de error o algo parecido. Si la posición es invalida o se pasa de la pantalla.
+        return;
+    }
+    for(int i = 0; i < rows; i++) {
+        for(int j = 0; j < columns; j++) {
+            drawPixel(row++, col++, matrix[i][j]);
+        }
+    }
+}
+
+void shift() {
+    int length = (screen_data->width * screen_data->height * 3) - ((3 * screen_data->width)*16);
+    memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + (3 * screen_data->width) * CHAR_HEIGHT), length);
+
+    clearLine(yPos);
+}
+
+void clearScreen() {
+    for(int i = 0; i < screen_data->height; i++) {
+        for(int j = 0; j < screen_data->width; j++) {
+            drawPixel(i, j, BACKGROUND_COLOUR);
+        }
+    }
+}
+
+void clearLine(int yPos) {
+    for(int i = yPos; i < CHAR_HEIGHT; i++) {
+        for(int j = 0; j < screen_data->width; j++) {
+            drawPixel(i, j, BACKGROUND_COLOUR);
+        }
+    }
+}
+
+
+
+
+
