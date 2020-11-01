@@ -17,6 +17,11 @@ void printc(char* toPrint, int color){
     printcFrom(toPrint,-1,-1,color);
 }
 
+void printcln(char* toPrint, int color) {
+    printc(toPrint, color);
+    print("\n");
+}
+
 void printcFrom(char* toPrint, int row, int col, int color){
     write(toPrint,row,col,color);
 }

@@ -2,10 +2,24 @@
 #define APPS_H
 #include <stdint.h>
 
-void infoReg(uint64_t* vec);
-void printMem(uint64_t* vec);
-void time(uint64_t*vec);
-void help(uint64_t* vec);
-void chess(uint64_t* vec);
+#define PROGRAMS 5
+
+typedef struct{
+    char name[10];
+    void(*f)(int, char [][25]);
+    char description[200];
+}programs;
+
+extern programs commands[PROGRAMS];
+
+void infoReg(int args, char argv[][25]);
+void printMem(int args, char argv[][25]);
+void time(int args, char argv[][25]);
+void showApps(int args, char argv[][25]);
+void chess(int args, char argv[][25]);
+
+
+
+
 
 #endif

@@ -60,10 +60,11 @@ int strtoks(char * string, char delimiter,char buffer[][25]) {
     int j = 0,  z = 0;
     while(string[i]!=0){
         z=0;
-        while (string[i]!=delimiter){
+        while (string[i]!=delimiter && string[i]!= 0){
             buffer[j][z++] = string[i++];
         }
-        buffer[j++][z]=0;
+        buffer[j][z]=0;
+        if(z!=0) j++;
         i++;  
     }
     return j; //Cantidad de tokens

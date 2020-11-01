@@ -4,17 +4,12 @@
 #include <syscalls.h>
 #include <stdint.h>
 #include <apps.h>
-
 #define CHUNK 200
-#define PROGRAMS 1
 
 int hasProgram(char * input);
-typedef struct{
-    char name[10];
-    void(*f)(uint64_t *);
-}programs;
+int tokenizeArguments(char* toToken, char tokens[10][25]);
 
-programs commands[PROGRAMS] = {{"time", time}};
+
 void initShell(){
     char *initGreet="user@TPArqui:~$ ";
     char c;
@@ -37,15 +32,18 @@ void initShell(){
                 }
             }
         }
+        content[contentLength]=0;
         if(contentLength > 0){
             println("");
-            uint64_t vec[2] = {0};
-            if(hasProgram(content)){
-                commands[0].f(vec);
+            char tokens[10][25] = {{0}}; //time param1
+            int args = tokenizeArguments(content,tokens) -1;//pues el 1 es el nombre del programa
+            int progAvail = hasProgram(tokens[0]);
+            if(progAvail!= -1){
+                commands[progAvail].f(args, tokens);
             }
             else{
                 print(content);
-                println(": command not found");
+                println(": command not found, try 'help' for help.");
             }
         }
         else{
@@ -55,25 +53,16 @@ void initShell(){
         contentLength = 0;
     }
 }
-int tokenizeArguments(char* toToken){
-    char tokens[10][25];
+int tokenizeArguments(char* toToken, char tokens[10][25]){
 	return strtoks(toToken,' ',tokens);
 }
 
 int hasProgram(char *input){
-    //int amountArgs = tokenizeArguments(input) - 1; //-1 dado que el 1token es el nombre del programa
-    /*for (int i = 0; i < PROGRAMS; i++)
-    {
-        if (strcmp(input,commands[i].name)==0)
-        {
-            dateInfo myDate;
-            commands[i].f(&myDate);
+    for (int i = 0; i < PROGRAMS; i++){
+        if (strcmp(input,commands[i].name)==0){
+            return i;
         }
-        
-    }*/
-    
+    }
+    return -1;
 
-    if(strcmp(input,"time") == 0)
-        return 1;
-    return 0;
 }

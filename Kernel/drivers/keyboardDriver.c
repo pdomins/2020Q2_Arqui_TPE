@@ -10,6 +10,7 @@
 #define TAB 0x0F
 #define ENTER 0x1C
 #define L_CTRL 0x1D
+//#define R_CTRL 0x
 #define L_SHIFT 0x2A
 #define R_SHIFT 0x36
 #define L_ALT 0x38
@@ -69,8 +70,8 @@ void keyboard_management(){
             break;
         case L_CTRL:
        // case R_CTRL:
-       //     ctrlPressed = 1;
-       //     break;
+            ctrlPressed = 1;
+            break;
         case L_CTRL + RELEASED_KEY:
         //case R_CTRL + RELEASED_KEY:
             ctrlPressed = 0;
@@ -82,14 +83,15 @@ void keyboard_management(){
     
     if(scan_code <= MAX_PRESSED_KEY && !isSpecialKey(scan_code)) {
         int secondChar = shiftPressed;
-        
         if(IS_ALPHA(pressCodes[scan_code][0])){
             secondChar = blockMayus ? 1 - shiftPressed: shiftPressed;
         }
-        buffer[curr++] = pressCodes[scan_code][secondChar];
-        if(ctrlPressed && pressCodes[scan_code][secondChar] == 's') {
-            takeSnapshot();
+        if(ctrlPressed) {
+            if (pressCodes[scan_code][secondChar] == 's') 
+                takeSnapshot();
+            return;
         }
+        buffer[curr++] = pressCodes[scan_code][secondChar];
         curr %= BUFFER_SIZE;
     }
 }
