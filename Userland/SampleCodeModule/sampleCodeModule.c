@@ -4,6 +4,7 @@
 #include<string.h>
 #include<syscalls.h>
 #include<shell.h>
+#include<standardIO.h>
 
 char * v = (char*)0xB8000 + 79 * 2;
 

@@ -5,35 +5,19 @@
 #define TIME_SYSCALL 10
 #define READ_SYSCALL 0
 #define WRITE_SYSCALL 1
-#define PRINTLN_SYSCALL 2
+#define DRAW_SYSCALL 2
 
-char getChar(){
-    char buffer [1] = {0};
-    _syscall(READ_SYSCALL, 1, buffer);
-    return *buffer;
-}
-void printColor(char *buffer, int colour){
-     int length = strlen(buffer);
-    _syscall(WRITE_SYSCALL, length, buffer,-1,-1,colour);
+int read(char * buffer, int length){
+    _syscall(READ_SYSCALL, length, buffer);
+    return 0; //Deberia retornar los caracteres que pudo leer
 }
 
-void print(char * buffer) {
+void write(char * buffer, int row, int col, int color) { 
     int length = strlen(buffer);
-    _syscall(WRITE_SYSCALL, length, buffer,-1,-1,-1);
+    _syscall(WRITE_SYSCALL, length, buffer, row, col, color);
 }
-void printFromPosition(char* buffer, int row, int col){
-    int length = strlen(buffer);
-    _syscall(WRITE_SYSCALL, length, buffer, row , col);
-}
+
 void getTime(date myDate){
     _syscall(TIME_SYSCALL, myDate);
 }
 
-
-void infoReg(){
-
-}
-
-void printMem(){
-
-}

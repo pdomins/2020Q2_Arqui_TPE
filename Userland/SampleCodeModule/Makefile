@@ -29,6 +29,6 @@ $(LOADEROBJECT):
 	$(GCC) $(GCCFLAGS) $(LOADERSRC) -c -o $(LOADEROBJECT)
 
 clean:
-	rm -rf asm/*.o *.o *.bin libraries/*.o
+	rm -rf asm/*.o *.o *.bin libraries/*.o utilities/*.o
 
 .PHONY: all clean

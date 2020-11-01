@@ -66,14 +66,13 @@ void clearLine(int yPos);
 void insertEnter();
 void backspace();
 
-void draw_char_from(int character, int row, int col, int color){
-    /*switch(character) {
+int draw_char_from(int character, int row, int col, int color){
+    switch(character) {
         case '\n': insertEnter();
-        return;
+        return 0;
         case '\b': backspace();
-        return; 
+        return 0; 
     }
-*/
     while (row%CHAR_HEIGHT!=0){ //si la direccion que me paso el usuario no esta alineada con el tamano de caracteres que estamos utilizando
        row++;
     }
@@ -94,22 +93,16 @@ void draw_char_from(int character, int row, int col, int color){
             }
         }
     }
-    //xPos += CHAR_WIDTH;
-    
-    
+    return 1;
 }
 
-void draw_char(int character, int color){
-    switch(character) {
-        case '\n': insertEnter();
-        return;
-        case '\b': backspace();
-        return; 
+int draw_char(int character, int color){
+    int ret = draw_char_from(character, yPos, xPos, color);
+    if(ret) {
+        xPos += CHAR_WIDTH;
     }
-
-    draw_char_from(character, yPos, xPos, color);
-    xPos += CHAR_WIDTH;
     checkPosition();
+    return ret;
 }
 
 void checkPosition() {
@@ -135,7 +128,6 @@ void drawPixel(int row, int col, int color){
     *current_position = green;
     current_position++;
     *current_position = red;
-    //current_position++;
 }
 
 void drawMatrix(int** matrix, int row, int col, int rows, int columns) {

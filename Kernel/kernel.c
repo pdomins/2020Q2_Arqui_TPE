@@ -8,7 +8,7 @@
 #include <idtLoader.h>
 #include <timerDriver.h>
 
-#include<libString.h>
+#include<library.h>
 
 extern uint8_t text;
 extern uint8_t rodata;

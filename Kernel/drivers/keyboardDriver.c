@@ -1,9 +1,7 @@
 #include <keyboardDriver.h>
 #include <lib.h>
 
-#include <videoDriver.h>
-
-#define KEYS 59 // o 60? continuara... TAL VEZ? :D
+#define KEYS 59
 #define MIN_SCAN 0
 #define MAX_SCAN 59
 
@@ -44,9 +42,12 @@ static char pressCodes[KEYS][2] =
 
 static int shiftPressed = 0;
 static int blockMayus = 0;
+static int ctrlPressed = 0;
+void preserveRegisters();
+void takeSnapshot();
 
 int isSpecialKey(int scanCode){
-    return scanCode == ESC || /*scanCode == BACKSPACE ||*//* scanCode == ENTER ||*/ scanCode == L_CTRL ||
+    return scanCode == ESC || /*scanCode == BACKSPACE ||scanCode == ENTER ||*/ scanCode == L_CTRL ||
             scanCode == L_SHIFT || scanCode == R_SHIFT || scanCode == L_ALT || scanCode == CAPS_LOCK;
 }
 
@@ -67,17 +68,29 @@ void keyboard_management(){
             blockMayus = blockMayus? 0:1;
             break;
         case L_CTRL:
+       // case R_CTRL:
+       //     ctrlPressed = 1;
+       //     break;
+        case L_CTRL + RELEASED_KEY:
+        //case R_CTRL + RELEASED_KEY:
+            ctrlPressed = 0;
+            break;
         case L_ALT:
             break;
     }
     
+    
     if(scan_code <= MAX_PRESSED_KEY && !isSpecialKey(scan_code)) {
         int secondChar = shiftPressed;
+        
         if(IS_ALPHA(pressCodes[scan_code][0])){
             secondChar = blockMayus ? 1 - shiftPressed: shiftPressed;
         }
         buffer[curr++] = pressCodes[scan_code][secondChar];
-        curr = curr % BUFFER_SIZE;
+        if(ctrlPressed && pressCodes[scan_code][secondChar] == 's') {
+            takeSnapshot();
+        }
+        curr %= BUFFER_SIZE;
     }
 }
 
@@ -93,4 +106,7 @@ int readBuffer(int length, char * toWrite){
         leer = (leer+1) % BUFFER_SIZE;
     }
     return length; 
+}
+void takeSnapshot(){
+    return;
 }

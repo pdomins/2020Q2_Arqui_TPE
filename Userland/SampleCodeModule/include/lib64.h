@@ -1,8 +1,8 @@
-#ifndef LIB64_H
+#ifndef LIB_64_H
 #define LIB_64_H
 #include <types.h>
 #include <stdint.h>
 
-void _syscall(uint64_t syscall, ...);
+int _syscall(uint64_t syscall, ...);
 
 #endif

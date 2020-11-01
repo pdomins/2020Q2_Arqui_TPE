@@ -2,36 +2,40 @@
 #include <videoDriver.h>
 #include <keyboardDriver.h>
 #include <timerDriver.h>
-#include <libString.h>
+#include <library.h>
+
+
+#define TIME_SYSCALL 10
+#define READ_SYSCALL 0
+#define WRITE_SYSCALL 1
+#define PRINT_MEM 50
 
 int readHandler(int length, char* toRead);
-int writeHandler(int length, char* toWrite, int row, int col,int colour);
+int writeHandler(int length, char* toWrite, int row, int col,int color);
 void getTime(date myDate);
 
 
-void syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP,uint64_t fifthP) {
+int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP,uint64_t fifthP) {
 	switch (call) {
-		case 0:
-			readHandler((int)firstP, (char*) secondP); //0 read
-			break;
-		case 1:
-			writeHandler((int)firstP, (char*) secondP,(int) thirdP, (int) fourthP, (int) fifthP); //1 write
-			break;
-		case 10: 
+		case READ_SYSCALL:
+			return readHandler((int)firstP, (char*) secondP); // 0 read
+		case WRITE_SYSCALL:
+			return writeHandler((int)firstP, (char*) secondP,(int) thirdP, (int) fourthP, (int) fifthP); // 1 write
+		case TIME_SYSCALL: 
 			getTime((date) firstP);
-			break;
+			return 0;
+		default:
+			return -1;
 	}
-	return;
+	return -1;
 }
 
 int readHandler(int length, char* toRead){
-    readBuffer(length, toRead);
-    return 0;
+    return readBuffer(length, toRead);
 }
 
-int writeHandler(int length, char* toWrite, int row, int col, int colour){
-	printStringFrom(toWrite,length,row,col,colour);
-    return 0;
+int writeHandler(int length, char* toWrite, int row, int col, int color){
+	return printStringFrom(toWrite,length,row,col,color);
 }
 
 void getTime(date myDate){

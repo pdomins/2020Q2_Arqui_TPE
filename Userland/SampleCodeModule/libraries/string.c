@@ -22,31 +22,49 @@ void dateToString(date myDate, char * buffer, char separator, int length) {
     itoa(myDate->minutes, buffer + 12, 2);
 	buffer[14] = ':';
     itoa(myDate->seconds, buffer + 15, 2);
-    buffer[18] = '\0';
+    buffer[18] = 0;
 }
 
 char* strcpy(char *destination, char *source){
     char *start = destination;
 
-    while(*source != '\0'){
+    while(*source != 0){
         *destination = *source;
         destination++;
         source++;
     }
 
-    *destination = '\0';
+    *destination = 0;
     return start;
 }
 
 int strlen(char* string){
     int count = 0;
-    while(string[count]!='\0'){
+    while(string[count]!= 0){
         count++;
     }
     return count;
 }
 
-void println(char *toPrint){
-    print(toPrint);
-    print("\n");
+int strcmp(char* stringA, char* stringB){
+    int i = 0;
+    for (; stringA[i] == stringB[i]; i++){
+        if (stringA[i] == 0)
+            return 0;
+    }
+    return stringA[i] - stringB[i];
+}
+
+int strtoks(char * string, char delimiter,char buffer[][25]) {
+    int i = 0; 
+    int j = 0,  z = 0;
+    while(string[i]!=0){
+        z=0;
+        while (string[i]!=delimiter){
+            buffer[j][z++] = string[i++];
+        }
+        buffer[j++][z]=0;
+        i++;  
+    }
+    return j; //Cantidad de tokens
 }
