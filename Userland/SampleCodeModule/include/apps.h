@@ -17,7 +17,7 @@ void printMem(int args, char argv[][25]);
 void time(int args, char argv[][25]);
 void showApps(int args, char argv[][25]);
 void chess(int args, char argv[][25]);
-
+void throwDivZero();
 
 
 

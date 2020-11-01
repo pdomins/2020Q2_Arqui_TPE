@@ -20,36 +20,3 @@ int printStringFrom(char* string,int length, int row, int col, int color){
     }
     return printedCharacters;
 }
-
-int uint_tToBase(uint64_t value,char* buffer, int base){
-    if (base < 2 || base > 26) return -1;
-    char* aux = buffer;
-    while (value>0){ //luego de este ciclo el numero me queda en buffer pero invertido
-        int r = value%base;
-        *aux++ = (r >= 10)?  r + 'A' - 10 : r + '\0';
-        value/=base;
-    }
-    *aux = 0; 
-
-    char *reversed, *ordered; 
-    int  length=0;
-    reversed = buffer;
-    ordered = aux - 1;
-    while (reversed < ordered){ //invierto el string en buffer
-        length++;
-        char c = *reversed;
-        *reversed = *ordered;
-        *ordered = c;
-        reversed++;
-        ordered--;
-    }
-    return length;
-}
-
-void turnToBaseN(uint64_t value, int base, char *buffer){
-    int length = uint_tToBase(value,buffer,base);
-    if (length == -1) return;
-}
-
-
-

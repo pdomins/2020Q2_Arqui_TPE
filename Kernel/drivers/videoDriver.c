@@ -186,7 +186,6 @@ void backspace(){
             drawPixel(yPos + i,xPos + j,BACKGROUND_COLOUR);
         }
     }
-
     return;
 }
 

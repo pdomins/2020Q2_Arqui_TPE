@@ -2,6 +2,10 @@
 #include <types.h>
 #include <syscalls.h>
 
+#define IS_DIGIT(c) (c >= '0' && c <= '9')
+
+void toMayus(char * num);
+
 void itoa(int value, char* buffer, int length){
     for (int i = 0; i < length; i++){
         buffer[length - i - 1] = value % 10 + '0';
@@ -68,4 +72,58 @@ int strtoks(char * string, char delimiter,char buffer[][25]) {
         i++;  
     }
     return j; //Cantidad de tokens
+}
+
+int uint_tToBase(uint64_t value,char* buffer, int base, int bufferLength){
+    if (base < 2 || base > 26) return -1;
+	
+    uint64_t digits = 0;
+    int pos = bufferLength - 2;
+	//Calculate characters for each digit
+	do
+	{
+		uint64_t remainder = value % base;
+        if((pos + 1) % 5 == 0) {
+            buffer[pos--] = ' ';
+        }
+		buffer[pos--] = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+		digits++;
+	}
+	while (value /= base);
+
+    while(pos >= 0) {
+        if((pos + 1) % 5 == 0) {
+            buffer[pos--] = ' ';
+        }
+        buffer[pos--] = '0';
+    }
+    buffer[bufferLength - 1] = 0;
+	return digits;
+}
+
+void turnToBaseN(uint64_t value, int base, char *buffer, int bufferLength){
+    //int length = 
+    uint_tToBase(value,buffer,base, bufferLength);
+    //if (length == -1) return;
+}
+
+//Convierte un string en hexa a un int. 
+uint64_t stringToInt(char * num) {
+    toMayus(num);
+    uint64_t value = 0;
+    for(int i = 0; num[i] != '\0'; i++) {
+        value *= 16;
+        value +=  IS_DIGIT(num[i]) ? (num[i] - '0') : (num[i] - 'A' + 10);
+    }
+    return value;
+}
+
+void toMayus(char * num) {
+    int i = 0;
+    while(num[i] != 0) {
+        if(num[i] >= 'a' && num[i] <= 'z') {
+            num[i] -= ('a' - 'A');
+        }
+        i++;
+    }
 }

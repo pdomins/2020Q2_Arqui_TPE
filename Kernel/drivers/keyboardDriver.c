@@ -1,6 +1,9 @@
 #include <keyboardDriver.h>
 #include <lib.h>
+#include <registers.h>
+#include <stdint.h>
 
+#define TOTAL_REGISTERS 19
 #define KEYS 59
 #define MIN_SCAN 0
 #define MAX_SCAN 59
@@ -44,8 +47,10 @@ static char pressCodes[KEYS][2] =
 static int shiftPressed = 0;
 static int blockMayus = 0;
 static int ctrlPressed = 0;
+uint64_t registers[TOTAL_REGISTERS]= {0}; 
+
 void preserveRegisters();
-void takeSnapshot();
+void takeSnapshot(uint64_t *rsp);
 
 int isSpecialKey(int scanCode){
     return scanCode == ESC || /*scanCode == BACKSPACE ||scanCode == ENTER ||*/ scanCode == L_CTRL ||
@@ -53,7 +58,7 @@ int isSpecialKey(int scanCode){
 }
 
 
-void keyboard_management(){
+void keyboard_management(uint64_t *rsp){
     int scan_code = read_keyboard();
     prev = curr;
     switch(scan_code) {
@@ -88,7 +93,7 @@ void keyboard_management(){
         }
         if(ctrlPressed) {
             if (pressCodes[scan_code][secondChar] == 's') 
-                takeSnapshot();
+                takeSnapshot(rsp);
             return;
         }
         buffer[curr++] = pressCodes[scan_code][secondChar];
@@ -109,6 +114,15 @@ int readBuffer(int length, char * toWrite){
     }
     return length; 
 }
-void takeSnapshot(){
-    return;
+
+void takeSnapshot(uint64_t *rsp){
+    for (int i = 0; i < TOTAL_REGISTERS; i++){
+        registers[i]=rsp[i];
+    }
+}
+
+void fillWithRegs(uint64_t * buffer){
+    for (int i = 0; i < TOTAL_REGISTERS; i++){
+        buffer[i]=registers[i];
+    }
 }
