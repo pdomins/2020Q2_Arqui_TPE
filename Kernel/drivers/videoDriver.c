@@ -4,6 +4,7 @@
 #include <lib.h>
 
 #define BACKGROUND_COLOUR 0x000000
+#define HEIGHT 768
 
 unsigned int bg_color = 0x0;
 unsigned int f_color = 0xFFFFFF;
@@ -13,7 +14,7 @@ unsigned int SCREEN_HEIGHT = 768;
 unsigned int SCREEN_bPP = 3; 
 
 static unsigned int xPos = 0;
-static unsigned int yPos = 0;
+static unsigned int yPos = (HEIGHT - CHAR_HEIGHT);
 
 struct vbe_mode_info_structure{
     uint16_t attributes;  // deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.

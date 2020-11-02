@@ -40,6 +40,7 @@ void initShell(){
             int progAvail = hasProgram(tokens[0]);
             if(progAvail!= -1){
                 commands[progAvail].f(args, tokens);
+                
             }
             else{
                 print(content);
@@ -51,6 +52,7 @@ void initShell(){
         }
                     
         contentLength = 0;
+        
     }
 }
 int tokenizeArguments(char* toToken, char tokens[10][25]){

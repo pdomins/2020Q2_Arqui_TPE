@@ -5,13 +5,16 @@
 #include <string.h>
 #include <stdint.h>
 
-uint64_t array[4] = {1,2,3,4};
+#define MEM_BYTES 32
+
+char array[] = {121,27,3,4,5,6,7,8,9,10};
 
 programs commands[] =   {   {"time", time, "    Displays the current system time."}, 
                             {"inforeg", infoReg, " Displays the registers current state."}, 
-                            {"printmem", printMem,"Prints on screen the first 32 bits from the given position."},
+                            {"printmem", printMem,"Prints on screen the first 32 bytes from the given position."},
                             {"help", showApps,"    Shows a static menu of the differents apps."},
-                            {"chess", chess, "   Starts a PVP chess match."}};
+                            {"chess", chess, "   Starts a PVP chess match."},
+                            {"clear",clear,"   Clears the current screen."}};
 
 int checkArgs(int args, int expected);
 
@@ -37,17 +40,19 @@ void infoReg(int args, char argv[][25]) {
 void printMem(int args, char argv[][25]){
     if(!checkArgs(args,1)) return;
 
-    uint64_t * dir = (uint64_t *)stringToInt(argv[1]);
-    uint64_t  dump[4];
+    char * dir = (char *)stringToInt(argv[1]);
+    char  dump[MEM_BYTES];
     memoryDump(dir, dump);
     char buffer[10] = {0};
 
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < MEM_BYTES; i++) {
         turnToBaseN((uint64_t)(dir + i), 16, buffer, 10);
         print(buffer);
         print(":  ");
-        turnToBaseN(dump[i], 16, buffer, 10);
+      // TODO
+        turnToBaseN(dump[i], 16, buffer, 3);
         print(buffer);
+        print(" ");
         println(" ");
     }
 }
@@ -66,21 +71,26 @@ void time(int args, char argv[][25]) {
 
 void showApps(int args, char argv[][25]) {
     if(!checkArgs(args, 0)) return;
-
+    
     int color = 0xf03fcd;
 
     for(int i = 0 ; i < PROGRAMS ; i++){
         printc(commands[i].name, color);
         printc(": ", color);
         printcln(commands[i].description, 0xcfd7e6);
-    }
+    }    
     char toHex[10];
-    turnToBaseN((uint64_t)argv,16,toHex, 10);
+    turnToBaseN(array,16,toHex, 10);
     println(toHex);
 }
  
 void chess(int args, char argv[][25]) {
     
+}
+
+void clear(int args, char argv[][25]){
+    if(!checkArgs(args, 0)) return;
+    clearScreen();
 }
 
 int checkArgs(int args, int expected) {

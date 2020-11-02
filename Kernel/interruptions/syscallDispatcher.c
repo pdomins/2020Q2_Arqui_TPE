@@ -10,14 +10,17 @@
 #define WRITE_SYSCALL 1
 #define INFO_REG 8
 #define MEM_DUMP 9
+#define CLEAR_SYSCALL 3
+
 
 #define MEM_BYTES 32
 
 int readHandler(int length, char* toRead);
 int writeHandler(int length, char* toWrite, int row, int col,int color);
 void getTime(date myDate);
-void memDumpHandler(uint64_t * dir, uint64_t * dump);
+void memDumpHandler(char * dir, char * dump);
 void infoRegHandler(uint64_t firstP[]);
+void clearScreenHandler();
 
 
 int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP,uint64_t fifthP) {
@@ -33,8 +36,10 @@ int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t
 			infoRegHandler((uint64_t*) firstP);
 			return 0;
 		case MEM_DUMP:
-			memDumpHandler((uint64_t *) firstP, (uint64_t *) secondP);
+			memDumpHandler((char *) firstP, (char *) secondP);
 			return 0;
+		case CLEAR_SYSCALL:
+			clearScreenHandler();
 		default:
 			return -1;
 	}
@@ -53,14 +58,16 @@ void getTime(date myDate){
 	getLocalDate(myDate);
 }
 
-void memDumpHandler(uint64_t * dir, uint64_t * dump) {
-	for(int i = 0; i < 4; i++) { //Cambiar el cuatro por defines, seria algo asi como MEM_BYTES / sizeof(uint64_t)
+void memDumpHandler(char * dir, char * dump) {
+	for(int i = 0; i < MEM_BYTES; i++) { //Cambiar el cuatro por defines, seria algo asi como MEM_BYTES / sizeof(uint64_t)
 		dump[i] = dir[i];
 	}
-	return;
 }
 
 void infoRegHandler(uint64_t firstP[]){
 	fillWithRegs(firstP);
-	return;
+}
+
+void clearScreenHandler(){
+	clearScreen();
 }

@@ -7,6 +7,6 @@ int read(char * buffer, int length);
 void write(char * buffer, int row, int col, int color);
 void getTime(date myDate);
 void getRegisters(uint64_t * registers);
-void memoryDump(uint64_t * dir, uint64_t * dump);
-
+void memoryDump(char * dir, char * dump);
+void clearScreen();
 #endif

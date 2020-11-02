@@ -9,6 +9,7 @@
 #define DRAW_SYSCALL 2
 #define INFO_REG 8
 #define MEM_DUMP 9
+#define CLEAR_SYSCALL 3
 
 int read(char * buffer, int length){
     _syscall(READ_SYSCALL, length, buffer);
@@ -20,6 +21,10 @@ void write(char * buffer, int row, int col, int color) {
     _syscall(WRITE_SYSCALL, length, buffer, row, col, color);
 }
 
+void clearScreen(){
+    _syscall(CLEAR_SYSCALL);
+}
+
 void getTime(date myDate){
     _syscall(TIME_SYSCALL, myDate);
 }
@@ -28,7 +33,7 @@ void getRegisters(uint64_t * registers) {
     _syscall(INFO_REG, registers);
 }
 
-void memoryDump(uint64_t * dir, uint64_t * dump) {
+void memoryDump(char * dir, char * dump) {
     _syscall(MEM_DUMP, dir, dump);
 }
 
