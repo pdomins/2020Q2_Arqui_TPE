@@ -1,6 +1,6 @@
 #include <naiveConsole.h>
 
-static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
+//static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 static char buffer[64] = { '0' };
 static uint8_t * const video = (uint8_t*)0xB8000;
@@ -48,7 +48,7 @@ void ncPrintBin(uint64_t value)
 
 void ncPrintBase(uint64_t value, uint32_t base)
 {
-    uintToBase(value, buffer, base);
+    turnToBaseN(value, base, buffer, 64);
     ncPrint(buffer);
 }
 
@@ -61,35 +61,29 @@ void ncClear()
 	currentVideo = video;
 }
 
-static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
-{
-	char *p = buffer;
-	char *p1, *p2;
-	uint32_t digits = 0;
-
+uint64_t turnToBaseN(uint64_t value, int base, char *buffer, int bufferLength) {
+    if (base < 2 || base > 26) return -1;
+	
+    uint64_t digits = 0;
+    int pos = bufferLength - 2;
 	//Calculate characters for each digit
 	do
 	{
-		uint32_t remainder = value % base;
-		*p++ = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
+		uint64_t remainder = value % base;
+        if((pos + 1) % 5 == 0) {
+            buffer[pos--] = ' ';
+        }
+		buffer[pos--] = (remainder < 10) ? remainder + '0' : remainder + 'A' - 10;
 		digits++;
 	}
 	while (value /= base);
 
-	// Terminate string in buffer.
-	*p = 0;
-
-	//Reverse string in buffer.
-	p1 = buffer;
-	p2 = p - 1;
-	while (p1 < p2)
-	{
-		char tmp = *p1;
-		*p1 = *p2;
-		*p2 = tmp;
-		p1++;
-		p2--;
-	}
-
+    while(pos >= 0) {
+        if((pos + 1) % 5 == 0) {
+            buffer[pos--] = ' ';
+        }
+        buffer[pos--] = '0';
+    }
+    buffer[bufferLength - 1] = 0;
 	return digits;
 }

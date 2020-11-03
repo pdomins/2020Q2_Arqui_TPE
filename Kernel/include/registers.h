@@ -1,6 +1,9 @@
 #ifndef REG_H
 #define REG_H
 
+#define TOTAL_REGISTERS 19
+
+
 #define R15 0
 #define R14 1
 #define R13 2

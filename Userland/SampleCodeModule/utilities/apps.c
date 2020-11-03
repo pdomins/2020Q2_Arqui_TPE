@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #define MEM_BYTES 32
+#define BUFFER64_BITS 20
 
 char array[] = {121,27,3,4,5,6,7,8,9,10};
 
@@ -24,11 +25,11 @@ void infoReg(int args, char argv[][25]) {
     char regis[][4]={"R15","R14","R13","R12","R11","R10","R9 ","R8 ","RSI","RDI","RBP","RDX","RCX","RBX","RAX","RIP","CS ","FLG","RSP"};
     uint64_t values[REGISTERS_AMOUNT];
     getRegisters(values);
-    char buffer[10]={0};
+    char buffer[BUFFER64_BITS]={0};
 
     for (int i = 0; i < REGISTERS_AMOUNT; i++)
     {
-        turnToBaseN(values[i], 16, buffer, 10);
+        turnToBaseN(values[i], 16, buffer, BUFFER64_BITS);
         printc(regis[i],0xaa08d0);
         printc(":  ",0xaa08d0);
         print("0x");
@@ -43,10 +44,10 @@ void printMem(int args, char argv[][25]){
     char * dir = (char *)stringToInt(argv[1]);
     char  dump[MEM_BYTES];
     memoryDump(dir, dump);
-    char buffer[10] = {0};
+    char buffer[BUFFER64_BITS] = {0};
 
     for(int i = 0; i < MEM_BYTES; i++) {
-        turnToBaseN((uint64_t)(dir + i), 16, buffer, 10);
+        turnToBaseN((uint64_t)(dir + i), 16, buffer, BUFFER64_BITS);
         print(buffer);
         print(":  ");
       // TODO
@@ -79,8 +80,8 @@ void showApps(int args, char argv[][25]) {
         printc(": ", color);
         printcln(commands[i].description, 0xcfd7e6);
     }    
-    char toHex[10];
-    turnToBaseN(array,16,toHex, 10);
+    char toHex[BUFFER64_BITS];
+    turnToBaseN(array,16,toHex, BUFFER64_BITS);
     println(toHex);
 }
  

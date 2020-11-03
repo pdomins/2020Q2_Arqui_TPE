@@ -3,5 +3,12 @@
 #include <stdint.h>
 
 int printStringFrom(char* string,int length, int row, int col, int colour);
+int printError(char * string);
+void printRegisters(uint64_t *rsp);
+void println(char * string);
+void print(char * string);
+void printc(char* string, int color);
+void printcln(char* string, int color);
+int strlen(char * string);
 
 #endif

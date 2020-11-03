@@ -3,7 +3,6 @@
 #include <registers.h>
 #include <stdint.h>
 
-#define TOTAL_REGISTERS 19
 #define KEYS 59
 #define MIN_SCAN 0
 #define MAX_SCAN 59

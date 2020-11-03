@@ -8,7 +8,8 @@
 #include <idtLoader.h>
 #include <timerDriver.h>
 
-#include<library.h>
+#include <library.h>
+#include <registers.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -84,17 +85,28 @@ void * initializeKernelBinary(){
 	ncNewline();
 	return getStackBase();
 }
+#define NEEDED_REGS 6
+uint64_t localRegisters[NEEDED_REGS]= {0};
 
 int main(){	
 	load_idt();
+	//saveInitRegs(localRegisters, sampleCodeModuleAddress, getStackBase());
+
+
+	
+	//declaracion array registros <- guardo los registros
+	ncPrint("Calling the sample code module returned: ");
+	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+
+    return 0;
+}
+
 	/*ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
 	*/
-	ncPrint("Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 	/*ncNewline();
 	ncNewline();
 	ncPrint("  Sample data module at 0x");
@@ -108,5 +120,3 @@ int main(){
 
 	ncPrint("[Finished]");
 	*/
-    return 0;
-}
