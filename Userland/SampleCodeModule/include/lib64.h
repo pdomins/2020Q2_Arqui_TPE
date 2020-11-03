@@ -5,4 +5,7 @@
 
 int _syscall(uint64_t syscall, ...);
 
+void invalidOpCode();
+
+
 #endif

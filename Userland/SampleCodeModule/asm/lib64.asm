@@ -3,6 +3,7 @@ GLOBAL sysRead
 GLOBAL sysWrite
 
 GLOBAL _syscall
+GLOBAL invalidOpCode
 
 ;------------------------------------------------------------
 ;                       WONDERLAND
@@ -15,3 +16,7 @@ _syscall:
     int 80h;
     ret
 ;------------------------------------------------------------
+
+invalidOpCode:
+    UD2
+    ret

@@ -4,6 +4,7 @@
 #include <types.h>
 #include <string.h>
 #include <stdint.h>
+#include <lib64.h>
 
 #define MEM_BYTES 32
 #define BUFFER64_BITS 20
@@ -113,7 +114,7 @@ void throwDivZero(){
 }
 
 void throwInvOpCode(){
-    return;
+    invalidOpCode();
 }
 
 void about(){
