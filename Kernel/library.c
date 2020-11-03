@@ -37,7 +37,7 @@ void println(char * string){
 }
 
 void print(char * string){
-    printStringFrom(string, strlen(string), -1, -1, 0x000000);
+    printStringFrom(string, strlen(string), -1, -1, 0xFFFFFF);
 }
 
 void printc(char* string, int color){
@@ -54,10 +54,10 @@ void printRegisters(uint64_t *rsp){
     char regis[][4]={"R15","R14","R13","R12","R11","R10","R9 ","R8 ","RSI","RDI","RBP","RDX","RCX","RBX","RAX","RIP","CS ","FLG","RSP"};
 
     for (int i = 0; i < TOTAL_REGISTERS; i++){
-        printc(regis[i],0xFF0000);
-        printc(": ",0xFF0000);
+        printc(regis[i],0xcfd7e6);
+        printc(": ",0xcfd7e6);
         turnToBaseN(rsp[i], 16, buffer, BUFFER64_BITS);
-        println(buffer);
+        printcln(buffer,0xcfd7e6);
     }
 }
 
