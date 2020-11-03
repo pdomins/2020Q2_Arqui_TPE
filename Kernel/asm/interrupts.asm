@@ -17,6 +17,9 @@ GLOBAL _irq05Handler
 GLOBAL _exception0Handler
 GLOBAl _exception6Handler
 
+GLOBAL saveInitRegs
+
+
 EXTERN syscallDispatcher
 EXTERN irqDispatcher
 EXTERN exceptionDispatcher
@@ -127,13 +130,20 @@ SECTION .text
 
 
 %macro exceptionHandler 1
+	mov rax, [initR]	
+	mov [rsp], rax
+	mov rax, [initR + 8]
+	mov [rsp + 24], rax
+
 	pushState
 
 	mov rdi, %1 ; pasaje de parametro
 	mov rsi, rsp ; pasaje del "vector" de registros
+
 	call exceptionDispatcher
 
 	popState
+
 	iretq
 %endmacro
 
@@ -212,6 +222,16 @@ haltcpu:
 	ret
 
 
+;---------------------------------------------------------
+; Save Initial Registers (to restore in case of exception)
+;---------------------------------------------------------
+saveInitRegs:
+	mov [initR], rdi		;le pasamos el rip como parametro desde C
+	mov [initR+8], rsp
+	ret
+;---------------------------------------------------------
+
 
 SECTION .bss
 	aux resq 1
+	initR resb 16

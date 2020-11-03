@@ -26,7 +26,9 @@ int printStringFrom(char* string, int length, int row, int col, int color){
 }
 
 int printError(char * string) {
-    return printStringFrom(string, strlen(string), -1, -1, 0xff0000);
+    printcln(string, 0xff0000);
+    return 0;
+
 }
 
 void println(char * string){

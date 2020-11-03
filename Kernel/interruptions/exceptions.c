@@ -1,5 +1,6 @@
 #include <library.h>
 #include <stdint.h>
+#include <lib.h>
 
 #define ZERO_EXCEPTION_ID 0
 #define INVALID_OPCODE_ID 6
@@ -17,7 +18,6 @@ void exceptionDispatcher(int exception, uint64_t * rsp) {
 			break;
 	}
 	printRegisters(rsp);
-	//resetState();
 }
 
 static void zero_division() {

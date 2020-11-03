@@ -2,10 +2,10 @@
 #define APPS_H
 #include <stdint.h>
 
-#define PROGRAMS 7
+#define PROGRAMS 9
 
 typedef struct{
-    char name[10];
+    char name[12];
     void(*f)(int, char [][25]);
     char description[200];
 }programs;
@@ -19,6 +19,7 @@ void showApps(int args, char argv[][25]);
 void chess(int args, char argv[][25]);
 void clear(int args, char argv[][25]);
 void throwDivZero();
+void throwInvOpCode();
 void about();
 
 

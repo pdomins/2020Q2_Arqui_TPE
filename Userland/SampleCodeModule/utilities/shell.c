@@ -66,5 +66,4 @@ int hasProgram(char *input){
         }
     }
     return -1;
-
 }

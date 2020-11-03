@@ -1,5 +1,5 @@
 #include <stdint.h>
-//#include <string.h>
+#include <interrupts.h>
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
@@ -24,7 +24,6 @@ static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
-
 
 void clearBSS(void * bssAddress, uint64_t bssSize){
 	memset(bssAddress, 0, bssSize);
@@ -85,16 +84,11 @@ void * initializeKernelBinary(){
 	ncNewline();
 	return getStackBase();
 }
-#define NEEDED_REGS 6
-uint64_t localRegisters[NEEDED_REGS]= {0};
 
 int main(){	
 	load_idt();
-	//saveInitRegs(localRegisters, sampleCodeModuleAddress, getStackBase());
+	saveInitRegs((uint64_t)sampleCodeModuleAddress);
 
-
-	
-	//declaracion array registros <- guardo los registros
 	ncPrint("Calling the sample code module returned: ");
 	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 

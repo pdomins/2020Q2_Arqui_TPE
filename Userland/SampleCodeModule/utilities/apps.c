@@ -10,13 +10,15 @@
 
 char array[] = {121,27,3,4,5,6,7,8,9,10};
 
-programs commands[] =   {   {"about",about,"   Information about the O.S and authors."},
-                            {"help", showApps,"    Menu of the differents apps."},
-                            {"time", time, "    Displays the systems current time."}, 
-                            {"inforeg", infoReg, " Displays the registers current state."}, 
-                            {"printmem", printMem,"Prints on screen the first 32 bytes from a given position."},
-                            {"chess", chess, "   Starts a PVP chess match."},
-                            {"clear",clear,"   Clears the current screen."}
+programs commands[] =   {   {"about",about,"      Information about the O.S and authors."},
+                            {"help", showApps,"       Menu of the differents apps."},
+                            {"time", time, "       Displays the systems current time."}, 
+                            {"inforeg", infoReg, "    Displays the registers current state."}, 
+                            {"printmem", printMem,"   Prints on screen the first 32 bytes from a given position."},
+                            {"chess", chess, "      Starts a PVP chess match."},
+                            {"clear",clear,"      Clears the current screen."},
+                            {"exceptionZ",throwDivZero," Throws a divide by zero exception"},
+                            {"exceptionOP",throwInvOpCode,"Throws an invalid Operation Code Exception"}
                         };
 
 int checkArgs(int args, int expected);
@@ -82,9 +84,9 @@ void showApps(int args, char argv[][25]) {
         printc(": ", color);
         printcln(commands[i].description, 0xcfd7e6);
     }    
-    char toHex[BUFFER64_BITS];
-    turnToBaseN(array,16,toHex, BUFFER64_BITS);
-    println(toHex);
+   // char toHex[BUFFER64_BITS];
+   // turnToBaseN(array,16,toHex, BUFFER64_BITS);
+   // println(toHex);
 }
  
 void chess(int args, char argv[][25]) {
@@ -111,9 +113,9 @@ void throwDivZero(){
 }
 
 void throwInvOpCode(){
-    
+    return;
 }
 
 void about(){
-    printcln("Clifford 1.0 by Arce Julian, Lombardi Matias & Domingues Paula", 0xcfd7e6);
+    printcln("Clifford 1.0 by Arce Julian, Lombardi Matias & Domingues Paula.", 0xcfd7e6);
 }
