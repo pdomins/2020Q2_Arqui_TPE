@@ -10,12 +10,14 @@
 
 char array[] = {121,27,3,4,5,6,7,8,9,10};
 
-programs commands[] =   {   {"time", time, "    Displays the current system time."}, 
+programs commands[] =   {   {"about",about,"   Information about the O.S and authors."},
+                            {"help", showApps,"    Menu of the differents apps."},
+                            {"time", time, "    Displays the systems current time."}, 
                             {"inforeg", infoReg, " Displays the registers current state."}, 
-                            {"printmem", printMem,"Prints on screen the first 32 bytes from the given position."},
-                            {"help", showApps,"    Shows a static menu of the differents apps."},
+                            {"printmem", printMem,"Prints on screen the first 32 bytes from a given position."},
                             {"chess", chess, "   Starts a PVP chess match."},
-                            {"clear",clear,"   Clears the current screen."}};
+                            {"clear",clear,"   Clears the current screen."}
+                        };
 
 int checkArgs(int args, int expected);
 
@@ -110,4 +112,8 @@ void throwDivZero(){
 
 void throwInvOpCode(){
     
+}
+
+void about(){
+    printcln("Clifford 1.0 by Arce Julian, Lombardi Matias & Domingues Paula", 0xcfd7e6);
 }
