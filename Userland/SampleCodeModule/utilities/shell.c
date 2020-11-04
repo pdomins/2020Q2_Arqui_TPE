@@ -12,10 +12,11 @@
 
 int hasProgram(char * input);
 int tokenizeArguments(char* toToken, char tokens[10][25]);
+char *initGreet="wooper@TPArqui:~$ ";
 
 
+// wooper!
 void initShell(){
-    char *initGreet="user@TPArqui:~$ ";
     char c;
     while(1){
         printc(initGreet,0x22ab00);

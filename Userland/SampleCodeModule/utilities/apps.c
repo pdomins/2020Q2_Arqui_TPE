@@ -1,4 +1,5 @@
 #include <apps.h>
+#include <chess.h>
 #include <syscalls.h>
 #include <standardIO.h>
 #include <types.h>
@@ -16,7 +17,7 @@ programs commands[] =   {   {"about",about,"      Information about the O.S and 
                             {"time", time, "       Displays the systems current time."}, 
                             {"inforeg", infoReg, "    Displays the registers current state."}, 
                             {"printmem", printMem,"   Prints on screen the first 32 bytes from a given position."},
-                            {"chess", chess, "      Starts a PVP chess match."},
+                            {"chess", chess, "      Starts a PVP chess match. Try chess help for aditional info."},
                             {"clear",clear,"      Clears the current screen."},
                             {"exceptionZ",throwDivZero," Throws a divide by zero exception"},
                             {"exceptionOP",throwInvOpCode,"Throws an invalid Operation Code Exception"}
@@ -102,7 +103,7 @@ void chess(int args, char argv[][25]) {
                         break;
                     }else if(ans == 'Y'){
                         println("Starting a new chess game...");
-                        //llamado al juego
+                        runChess(0);
                         break;
                     }else{
                         println("Invalid option. Please enter 'Y' if you want to start a new chess game. If not, enter 'n'.");
@@ -116,8 +117,8 @@ void chess(int args, char argv[][25]) {
         println("Please wait! The game will resume just from where you left it!");
     }else if (strcmp(argv[1],"help")== 0 ||strcmp(argv[1],"-h")== 0||strcmp(argv[1],"menu")== 0 ||strcmp(argv[1],"-m")== 0){
         int color = 0xf03fcd;
-        printc("chess new or chess -n", color);printc(": ", color); printcln("   Starts a new chess game.", 0xcfd7e6);
-        printc("chess resume or chess -r", color);printc(": ", color); printcln("Resumes last loaded game.", 0xcfd7e6);
+        printc("chess new, -n", color);printc(": ", color); printcln("   Starts a new chess game.", 0xcfd7e6);
+        printc("chess resume, -r", color);printc(": ", color); printcln("Resumes last loaded game.", 0xcfd7e6);
 
     }else{
         print(argv[1]);println(": command not found");
