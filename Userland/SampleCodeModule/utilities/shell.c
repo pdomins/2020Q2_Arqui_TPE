@@ -15,7 +15,7 @@ int tokenizeArguments(char* toToken, char tokens[10][25]);
 char *initGreet="wooper@TPArqui:~$ ";
 
 
-// wooper!
+// wooper! wooper :(
 void initShell(){
     char c;
     while(1){
