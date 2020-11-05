@@ -3,6 +3,7 @@
 #include <types.h>
 #include <stdint.h>
 
+void toMayus(char * string);
 void itoa(int value, char* buffer, int length);
 void dateToString(date myDate,char *buffer,char separator, int length);
 char* strcpy(char *destination, char *source);

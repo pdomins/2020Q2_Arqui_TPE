@@ -131,16 +131,27 @@ void drawPixel(int row, int col, int color){
     *current_position = red;
 }
 
-void drawMatrix(int** matrix, int row, int col, int rows, int columns) {
+int drawMatrix(int * matrix, int row, int col, int rows, int columns) {
     if(row < 0 || col < 0 || row + rows > screen_data->height || col + columns > screen_data->width) {
         //Mostrar mensaje de error o algo parecido. Si la posición es invalida o se pasa de la pantalla.
-        return;
+        draw_char('E', 0xFF0000);
+        return -1;
     }
+    int x = col;
+    int y = row;
     for(int i = 0; i < rows; i++) {
         for(int j = 0; j < columns; j++) {
-            drawPixel(row++, col++, matrix[i][j]);
+            if(matrix[i * columns + j] >= 0 /*&& matrix[i][j] <= 0xFFFFFF*/) {
+                drawPixel(y, x, matrix[i * columns + j]);
+            }
+            x++;
         }
+        y++;
+        x = col;
+
     }
+
+    return 0; //Se debería retorna la cantidad de pixeles impresos o algo asi
 }
 
 void shift() {

@@ -4,7 +4,7 @@
 
 #define IS_DIGIT(c) (c >= '0' && c <= '9')
 
-void toMayus(char * num);
+
 
 void itoa(int value, char* buffer, int length){
     for (int i = 0; i < length; i++){

@@ -3,14 +3,15 @@
 
 //functions that return 1 if the moves were executed correctly, 0 if else.
 
-int movePawn(int fromX,int fromY,int toX,int toY, int playNum);
-int moveKnight(int fromX,int fromY,int toX,int toY);
-int moveKnight(int fromX,int fromY,int toX,int toY);
-int moveKing(int fromX,int fromY,int toX,int toY);
-int moveRook(int fromX,int fromY,int toX,int toY);
-int moveBishop(int fromX,int fromY,int toX,int toY);
-int moveQueen(int fromX,int fromY,int toX,int toY);
+int movePawn(int fromRow,int fromCol,int toRow,int toCol);
+int moveKnight(int fromRow,int fromCol,int toRow,int toCol);
+int moveKnight(int fromRow,int fromCol,int toRow,int toCol);
+int moveKing(int fromRow,int fromCol,int toRow,int toCol);
+int moveRook(int fromRow,int fromCol,int toRow,int toCol);
+int moveBishop(int fromRow,int fromCol,int toRow,int toCol);
+int moveQueen(int fromRow,int fromCol,int toRow,int toCol);
 
-void kingEaten();
+int isValidCoord(int x, int y);
+
 
 #endif

@@ -9,6 +9,7 @@
 #define TIME_SYSCALL 10
 #define READ_SYSCALL 0
 #define WRITE_SYSCALL 1
+#define DRAW_SYSCALL 2
 #define INFO_REG 8
 #define MEM_DUMP 9
 #define CLEAR_SYSCALL 3
@@ -20,6 +21,7 @@
 
 int readHandler(int length, char* toRead);
 int writeHandler(int length, char* toWrite, int row, int col,int color);
+int drawHandler(int * matrix, int row, int col, int rows, int columns);
 void getTime(date myDate);
 void memDumpHandler(char * dir, char * dump);
 void infoRegHandler(uint64_t firstP[]);
@@ -32,6 +34,8 @@ int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t
 			return readHandler((int) firstP, (char*) secondP); // 0 read
 		case WRITE_SYSCALL:
 			return writeHandler((int) firstP, (char*) secondP,(int) thirdP, (int) fourthP, (int) fifthP); // 1 write
+		case DRAW_SYSCALL:
+            return drawHandler((int *) firstP, (int) secondP,(int) thirdP, (int) fourthP, (int) fifthP);
 		case TIME_SYSCALL: 
 			getTime((date) firstP);
 			return 0;
@@ -58,6 +62,10 @@ int readHandler(int length, char* toRead){
 
 int writeHandler(int length, char* toWrite, int row, int col, int color){
 	return printStringFrom(toWrite,length,row,col,color);
+}
+
+int drawHandler(int * matrix, int row, int col, int rows, int columns) {
+    return drawMatrix(matrix, row, col, rows, columns);
 }
 
 void getTime(date myDate){

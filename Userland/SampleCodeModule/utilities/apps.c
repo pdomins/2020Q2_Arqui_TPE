@@ -1,11 +1,11 @@
-#include <apps.h>
-#include <chess.h>
+#include <chessHandler.h>
 #include <syscalls.h>
 #include <standardIO.h>
 #include <types.h>
 #include <string.h>
 #include <stdint.h>
 #include <lib64.h>
+#include <apps.h>
 
 #define MEM_BYTES 32
 #define BUFFER64_BITS 20
@@ -90,40 +90,9 @@ void showApps(int args, char argv[][25]) {
    // turnToBaseN(array,16,toHex, BUFFER64_BITS);
    // println(toHex);
 }
- 
-void chess(int args, char argv[][25]) {
-    if (args == 0 || strcmp(argv[1],"new")== 0 ||strcmp(argv[1],"-n")==0|| strcmp(argv[1],"start")== 0 ||strcmp(argv[1],"-s")== 0){
-        println("You're about to start a new chess game. Are you sure? [Y/n]");
-        char ans;
-        while ((ans != 'n' )&& ans != 'Y'){
-            while((ans = getChar())){
-                if (ans!=0){
-                    if (ans == 'n'){
-                        println("Need help? Enter chess help or chess -h to display a menu of the different options from which you can choose");
-                        break;
-                    }else if(ans == 'Y'){
-                        println("Starting a new chess game...");
-                        runChess(0);
-                        break;
-                    }else{
-                        println("Invalid option. Please enter 'Y' if you want to start a new chess game. If not, enter 'n'.");
-                        break;
-                    }  
-                }
-            }
-        }
-    }else if (strcmp(argv[1],"resume")== 0 ||strcmp(argv[1],"-r")== 0||strcmp(argv[1],"continue")== 0 ||strcmp(argv[1],"-c")== 0){
-        // aca habria que chequear que haya un juego previo inicializado, sino que pregunte si quiere empezar uno nuevo
-        println("Please wait! The game will resume just from where you left it!");
-    }else if (strcmp(argv[1],"help")== 0 ||strcmp(argv[1],"-h")== 0||strcmp(argv[1],"menu")== 0 ||strcmp(argv[1],"-m")== 0){
-        int color = 0xf03fcd;
-        printc("chess new, -n", color);printc(": ", color); printcln("   Starts a new chess game.", 0xcfd7e6);
-        printc("chess resume, -r", color);printc(": ", color); printcln("Resumes last loaded game.", 0xcfd7e6);
 
-    }else{
-        print(argv[1]);println(": command not found");
-    } 
-    return;  
+void chess(int args, char argv[][25]) {
+    chessHandler(args,argv);
 }
 
 void clear(int args, char argv[][25]){

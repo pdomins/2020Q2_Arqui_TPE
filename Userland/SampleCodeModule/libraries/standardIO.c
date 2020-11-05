@@ -45,3 +45,9 @@ void putChar(char c) {
     *buffer=c;
     print(buffer);
 }
+
+void putCharFrom(char c, int row, int col) {
+    char buffer[2] = {0};
+    *buffer = c;
+    printFrom(buffer, row, col);
+}

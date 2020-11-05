@@ -17,7 +17,7 @@ int printStringFrom(char* string, int length, int row, int col, int color){
         }
     } else {
         for (int i = 0; i < length; i++){
-            if(draw_char_from(string[i],row,col,color)) {
+            if(draw_char_from(string[i],row,col + i * 8,color)) {
                 printedCharacters++;
             }       
         }

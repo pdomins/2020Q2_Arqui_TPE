@@ -22,6 +22,10 @@ void write(char * buffer, int row, int col, int color) {
     _syscall(WRITE_SYSCALL, length, buffer, row, col, color);
 }
 
+void draw(int * matrix, int row, int col, int rows, int columns) {
+    _syscall(DRAW_SYSCALL, matrix, row, col, rows, columns);
+}
+
 void clearScreen(){
     _syscall(CLEAR_SYSCALL);
 }

@@ -9,6 +9,7 @@ void printcFrom(char* toPrint, int row, int col, int color); //prints with color
 void printFrom(char* toPrint, int row, int col); //prints from a certain position
 char getChar();
 void removeChar();
-void putChar(char c); 
+void putChar(char c);
+void putCharFrom(char c, int row, int col); 
 
 #endif
