@@ -12,6 +12,6 @@ int moveBishop(int fromRow,int fromCol,int toRow,int toCol);
 int moveQueen(int fromRow,int fromCol,int toRow,int toCol);
 
 int isValidCoord(int x, int y);
-
+int isWhitePiece(int pieceNumber);
 
 #endif

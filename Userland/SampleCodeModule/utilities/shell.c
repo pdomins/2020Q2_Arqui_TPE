@@ -20,7 +20,7 @@ void initShell(){
     char c;
     while(1){
         printc(initGreet,0x22ab00);
-        char content[CHUNK] = {0};
+        char content[CHUNK] = {0};  
         int contentLength = 0;
         while( (c = getChar()) != '\n'){
             if(c != 0){

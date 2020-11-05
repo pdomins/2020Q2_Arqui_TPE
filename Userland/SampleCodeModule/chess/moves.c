@@ -1,6 +1,8 @@
 #include <chess.h>
 #include <moves.h>
 #include <maths.h>
+#include <string.h>
+#include <standardIO.h>
 
 extern int board[8][8][3];
 int isWhitePiece(int pieceNumber);
@@ -142,35 +144,32 @@ int isValidRookPath(int fromRow, int fromCol,int toRow, int toCol){
     //Creo que el i y el j estan vinculados al reves con el fromRow y fromCol
     if (fromRow == toRow){ //Te moves horizontal
         if(fromCol < toCol){ //Te moves para la derecha
-            while( j != toCol ){
+            while( ++j != toCol ){
                 if(board[i][j][PIECE] != 0)
                     return 0;
-                j++;
             }
         }
         else{ //fromCol > toCol  Te moves para la izquierda
-            while( j != toCol ) {
+            while( --j != toCol ) {
                 if(board[i][j][PIECE] != 0)
                     return 0;
-                j--;
             }
         }
     }
     else{ //Te moves vertical
         if(fromRow < toRow){ //Te moves para abajo
-            while( i != toRow ){
+            while( ++i != toRow ){
                 if (board[i][j][PIECE]!=0) 
                     return 0;
-                i++;
             }
         }else{
-            while( i != toRow ) //Te moves para arriba
-                if (board[i][j][PIECE]!=0) 
+            while( --i != toRow ){ //Te moves para arriba
+                if (board[i][j][PIECE]!=0) {
                     return 0;
-                i--;
+                }
+            }
         }
     }
-
     return 1;
 }
 

@@ -38,7 +38,7 @@
  * Tablero
 **/
 char piecesName[] = {KING,QUEEN,ROOK,BISHOP,KNIGHT,PAWN}; // (piecesName[board[x][y][0] - 1)%6]
-int  board[8][8][3]; // {posX, posY, vect[3] = {numPieza, 0/1 movimiento, color fondo}};
+int  board[8][8][3]={{{0}}}; // {posX, posY, vect[3] = {numPieza, 0/1 movimiento, color fondo}};
 void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow);
 void exit();
 
@@ -48,6 +48,7 @@ void fillBoard();
 void clearLine(); //Limpia la linea donde se escriben los comandos
 void pause(); //pausa el juego
 void printBoard();
+int isWhitesTurn();
 
 int kingDead = 0;
 int turns = 0;
@@ -68,8 +69,10 @@ void incrementTimer(){
 }
 
 int makeMove(int fromRow, int fromCol, int toRow, int toCol){
-    printFrom("entro a make move", statusLine,0);
     if(!isValidCoord(fromRow,fromCol)) return 0;
+    if ((isWhitePiece(board[fromRow][fromCol][PIECE]) && !isWhitesTurn()) ||
+            (!isWhitePiece(board[fromRow][fromCol][PIECE]) && isWhitesTurn())) 
+                return 0;
     switch (board[fromRow][fromCol][0]){
         case WHITE_KING:
         case BLACK_KING: 
@@ -154,7 +157,6 @@ void play(){ //while kingDead != 0 && pausedd != 1
             int fromCol, fromRow, toCol, toRow;
             parseInstruction(buffer, &fromCol, &fromRow, &toCol, &toRow);
             if (makeMove(fromRow,fromCol,toRow,toCol)){
-                printFrom("movimiento valido", statusLine-16, 0);
                 turns++; //si es un movimiento valido, cambio de turno
                 printBoard();
             }
@@ -211,13 +213,14 @@ void fillBoard() {
             } else {
                 board[i][j][BACKGROUND_COLOR] = BROWN;
             }
+            
             board[i][j][MOVEMENTS] = 0;
         }        
     }
-    for(int i = 0; i < BOARD_SIZE; i++) {
+    /*for(int i = 0; i < BOARD_SIZE; i++) {
         board[1][i][PIECE] = BLACK_PAWN;
         board[6][i][PIECE] = WHITE_PAWN;
-    }
+    }*/
     board[0][0][PIECE] = BLACK_ROOK;
     board[0][1][PIECE] = BLACK_KNIGHT;
     board[0][2][PIECE] = BLACK_BISHOP;
