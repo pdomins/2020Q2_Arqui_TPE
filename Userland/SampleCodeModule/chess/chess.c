@@ -5,8 +5,12 @@
 #include <chessVisual.h>
 #include <syscalls.h>
 #include <maths.h>
+
 #define INSTRUCTION_LENGTH 4
 #define MAX_TIME 500
+
+#define IS_ALPHA(c) ( (c <= '9' && c >= '0') || (c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') )
+
 /*      B   N
     K = 1 / 7
     Q = 2 / 8
@@ -41,11 +45,12 @@ int maxTimeReached = 0;
 int statusLine = 736;
 int line = 752; //Son pixeles
 int col = 0;
+char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
 
-
+int timerReference;
 void incrementTimer(){
     if(inGame){
-        if( (turns %2) == 0 )
+        if(isWhitesTurn())
             whiteTicks++;
         else
             blackTicks++;
@@ -101,42 +106,52 @@ void play(){
         while ((c = getChar()) != '\n'){
             if (c!=0){
                 switch (c){
-                case '\b':
-                    if (position > 0){
-                        buffer[--position] = 0;
-                        if(col >= 0) {
-                            col -= 8;
+                    case '\b':
+                        if (position > 0){
+                            buffer[--position] = 0;
+                            if(col >= 0) {
+                                col -= 8;
+                            }
+                            putCharFrom(' ', line, col);
                         }
-                        putCharFrom(' ', line, col);
-                    }
-                    break;
-                case 'p':
-                case 'P':
-                    pause();
-                    break;
-                case 'q':
-                case 'Q':
-                    exit();
-                    break;
-                default:
-                    buffer[position++] = c;
-                    putCharFrom(c, line, col);
-                    col += 8;
-                    break;
+                        break;
+                    case 'p':
+                    case 'P':
+                        pause();
+                        break;
+                    case 'q':
+                    case 'Q':
+                        exit();
+                        break;
+                    case 'r':
+                    case 'R':
+                        rotate();
+                        printBoard();
+                        break;
+                    default:
+                        if (position<10 && IS_ALPHA(c)){
+                        buffer[position++] = c;
+                        putCharFrom(c, line, col);
+                        col += 8;
+                        }
+                        break;
                 } 
             }
             if(abs(whiteTicks - blackTicks) > MAX_TIME){
                 maxTimeReached = 1;
                 break;
-            }else if(exitSave){
+            }
+            if(exitSave){
                 break;
-            }else if (exitWithoutSave){
+            }
+            if (exitWithoutSave){
                 break;
             }
             if(col >= 1024) {
                 col = 0;
                     
             }
+            printTime(whiteTicks/18,blackTicks/18);
         }
         col = 0;
         clearLine();
@@ -145,17 +160,28 @@ void play(){
             int fromCol, fromRow, toCol, toRow;
             parseInstruction(buffer, &fromCol, &fromRow, &toCol, &toRow);
             if (makeMove(fromRow,fromCol,toRow,toCol)){
+                switch (turns%2)
+                {
+                case 0:
+                    strcpy(whiteMoves[(int)turns/2],buffer);
+                    break;
+                case 1:
+                    strcpy(blackMoves[(int)turns/2],buffer);
+                    break;
+                }
                 turns++; //si es un movimiento valido, cambio de turno
                 printBoard();
             }
-        } 
+        }
     }
+
     if (!exitSave && !exitWithoutSave && !maxTimeReached){
         printFrom("ganaste logi apreta enter para volver a la yel MAESTRO",statusLine,0);
         while ((getChar())!='\n');
     }else if (maxTimeReached){
-        printFrom("ganaste due to inactivity del otro pelotudo. apreta enter para volver a yel",statusLine,0);
-        while ((getChar())!='\n');
+        printFrom("inactivity. apreta enter para volver a yel",statusLine,0);
+        while ((getChar())!='\n');        clearLine();
+
     }
     clearScreen();
     return;
@@ -182,6 +208,7 @@ void exit(){
     inGame = 0;
     exitWithoutSave = 1; //returns to shell
 }
+
 void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
     exitWithoutSave = 0;
     kingDead = 0;
@@ -189,6 +216,7 @@ void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
     exitSave = 0;
     whiteTicks = 0;
     blackTicks  = 0;
+    maxTimeReached = 0;
     fillBoard();
     ////syscall con puntero a funcion !!!!!!!!
    // addAlarm(&incrementTimer, 15); //no se cual es el numero porque no hay multiplo lol 
@@ -200,9 +228,10 @@ void runChess(int entry){
     if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
     clearScreen();
     printBoard();
-    addAlarm(&incrementTimer, 1);
+    timerReference = addAlarm(&incrementTimer, 1);
     inGame = 1;
     play(); //setea exitSave=0 y llama a play
+    //SYSCALL SACAAAAAAAAAAAAAAR
 }
 
 void fillBoard() {

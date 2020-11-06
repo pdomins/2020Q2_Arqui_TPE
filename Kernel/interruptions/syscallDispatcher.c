@@ -49,7 +49,7 @@ int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t
 			clearScreenHandler();
 			return 0;
 		case ADD_ALARM:
-			addFunc((void *)firstP, secondP);
+			return addFunc((void *)firstP, secondP);
 		default:
 			return -1;
 	}

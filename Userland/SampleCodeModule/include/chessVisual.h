@@ -8,5 +8,7 @@
 #define BLACK 0x0000000
 
 void printBoard();
+void printTime(int whiteSecs,int blackSecs);
+void rotate();
 
 #endif

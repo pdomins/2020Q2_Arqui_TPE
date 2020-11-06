@@ -10,5 +10,5 @@ void getTime(date myDate);
 void getRegisters(uint64_t * registers);
 void memoryDump(char * dir, char * dump);
 void clearScreen();
-void addAlarm(void (*func) (void), int ticks);
+int addAlarm(void (*func) (void), int ticks);
 #endif

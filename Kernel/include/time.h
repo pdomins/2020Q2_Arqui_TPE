@@ -4,5 +4,6 @@
 void timer_handler();
 int ticks_elapsed();
 int seconds_elapsed();
-void addFunc(void (*func) (void), int ticks);
+int addFunc(void (*func) (void), int ticks);
+
 #endif

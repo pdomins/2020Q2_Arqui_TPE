@@ -3,13 +3,20 @@
 #include <standardIO.h>
 #include <syscalls.h>
 #include <maths.h>
+#include <string.h>
 
+#define DIM 8
+#define CHAR_HEIGHT 16
+#define CHAR_WIDTH 8
 
 extern int board[8][8][3];
-
+int rotation = 0;
 
 void printBoard(){
     int original_s = 16;
+    int scaled_s = 80; //Size de los cuadrados
+    int initial_x = 32;
+    int initial_y = 32;
 
     char * pawn  = {
              "________________"
@@ -137,93 +144,94 @@ void printBoard(){
     };
 
     /**
-     * Armado del tablero
+     * Impresion de las letra y numeros
      */
+    int row = initial_y + scaled_s / 2 - CHAR_HEIGHT; //8 es el char_width;
+    int col = initial_x + scaled_s / 2 - CHAR_WIDTH;
+    int rightCol = initial_x + scaled_s * DIM + 8;
+    int leftCol = initial_x / 2;
+    int bottomRow = initial_y + scaled_s * DIM;
+    int topRow = 8;
+    char * buffer = {0};
+    switch(rotation) {
+        case 0:
+            for(int i = 0; i < DIM; i++) {
+                *buffer = '0' + DIM - i; //Izquierda y Derecha
+                printFrom(buffer, row, leftCol); //Izquierda
+                printFrom(buffer, row, rightCol); //Derecha
+                *buffer = 'A' + i; //Arriba y Abajo
+                printFrom(buffer, topRow, col); //Arriba
+                printFrom(buffer, bottomRow, col); //Abajo
+                col += scaled_s;
+                row += scaled_s;
+            }
+            break;
+        case 1:
+            for(int i = 0; i < DIM; i++) {
+                *buffer = 'A' + i; //Izquierda y Derecha
+                printFrom(buffer, row, leftCol); //Izquierda
+                printFrom(buffer, row, rightCol); //Derecha
+                *buffer = '1' + i;  //Arriba y Abajo
+                printFrom(buffer, topRow, col); //Arriba
+                printFrom(buffer, bottomRow, col); //Abajo
+                col += scaled_s;
+                row += scaled_s;
+            }
+            break;
+        case 2:
+            for(int i = 0; i < DIM; i++) {
+                *buffer = '1' + i;; //Izquierda y Derecha
+                printFrom(buffer, row, initial_x / 2); //Izquierda
+                printFrom(buffer, row, rightCol); //Derecha
+                *buffer = 'A' + DIM - 1 - i;; //Arriba y Abajo
+                printFrom(buffer, topRow, col); //Arriba
+                printFrom(buffer, bottomRow, col); //Abajo
+                col += scaled_s;
+                row += scaled_s;
+            }
+            break;
+        case 3:
+            for(int i = 0; i < DIM; i++) {
+                *buffer = 'A' + DIM - 1 - i; //Izquierda y Derecha
+                printFrom(buffer, row, leftCol); //Izquierda
+                printFrom(buffer, row, rightCol); //Derecha
+                *buffer = '0' + DIM - i; //Arriba y Abajo
+                printFrom(buffer, topRow, col); //Arriba
+                printFrom(buffer, bottomRow, col); //Abajo
+                col += scaled_s;
+                row += scaled_s;
+            }
+            break;
+    }
 
-    int scaled_s = 80; //Size de los cuadrados
+    /**
+     * Impresión del tablero
+     */
     int matrix[scaled_s * scaled_s];
     char * aux = baseBoard;
-    int initial_x = 32;
-    int initial_y = 32;
+
     int x = initial_x;
     int y = initial_y;
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            scaleMatrix(aux + i * 8 + j, matrix, 1, scaled_s, BEIGE, BROWN);
+    for(int i = 0; i < DIM; i++) {
+        for(int j = 0; j < DIM; j++) {
+            int iAux = i;
+            int jAux = j;
+            rotateIndex(&iAux, &jAux, DIM, rotation);
+            scaleMatrix(aux + iAux * DIM + jAux, matrix, 1, scaled_s, BEIGE, BROWN);
             draw(matrix, y, x, scaled_s, scaled_s);
             x += scaled_s;
         }
         y += scaled_s;
-        x= initial_x;
-    }
-
-    int num = initial_y + scaled_s / 2 - 16; //8 es el char_width
-    printFrom("8", num, 16); num+=scaled_s;
-    printFrom("7", num, 16); num+=scaled_s;
-    printFrom("6", num, 16); num+=scaled_s;
-    printFrom("5", num, 16); num+=scaled_s;
-    printFrom("4", num, 16); num+=scaled_s;
-    printFrom("3", num, 16); num+=scaled_s;
-    printFrom("2", num, 16); num+=scaled_s;
-    printFrom("1", num, 16);
-
-    num = initial_x + scaled_s / 2;
-    printFrom("A", 8, num -8); num+=(scaled_s);
-    printFrom("B", 8, num-8); num+=(scaled_s);
-    printFrom("C", 8, num-8); num+=(scaled_s);
-    printFrom("D", 8, num-8); num+=(scaled_s);
-    printFrom("E", 8, num-8); num+=(scaled_s);
-    printFrom("F", 8, num-8); num+=(scaled_s);
-    printFrom("G", 8, num-8); num+=(scaled_s);
-    printFrom("H", 8, num-8);
-
+        x = initial_x;
+    } 
 
     /**
-     * Seria el log de jugadas
-     */
-
-    char * flecha = {
-            "_________"
-            "_________"
-            "____X____"
-            "___XXX___"
-            "__XXXXX__"
-            "_XXXXXXX_"
-            "XXXXXXXXX"
-            "_________"
-            "_________"
-    };
-
-    int arrow[9*9];
-
-
-    int cursor = 24;
-    int init_log_row = 80;
-    int color_log = 0xadadad;
-    int color_time = 0xffc32b;
-    int color_diff = 0x38ad34;
-
-    printcFrom("Player 1        Player 2", cursor, 740, 0xFFFFFF); cursor += 16;
-    printcFrom("   00:00        00:00   ", cursor, 740, color_time);cursor += 16;
-    printcFrom("         +00:00        ", cursor, 740, color_diff);cursor += 16;
-    printcFrom("    a4d5        e6h3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    e3a2        c8a3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    a6e1        b5c3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    d4f5        a2a3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    g6h6        f3g6    ", cursor, 740, color_log);cursor += 16;
-
-    scaleMatrix(flecha, arrow, 9, 9, color_log, -1);
-    draw(arrow, init_log_row, 956, 9, 9);
-    //draw(scaled_board, 0, 0, s, s);
-
-    //initial_y = 16;
-    /*
      * Colocacion de las piezas
-    */
+    **/
     for(int i = 0 ; i < 8 ; i++) {
         for(int j = 0 ; j < 8 ; j++) {
-            if(board[i][j][PIECE] != 0) {
-                switch(board[i][j][PIECE]) {
+            if (board[i][j][PIECE] != 0) {
+                switch (board[i][j][PIECE]) {
                     case WHITE_KING:
                         scaleMatrix(king, matrix, original_s, scaled_s, WHITE, -1);
                         break;
@@ -251,7 +259,7 @@ void printBoard(){
                     case BLACK_BISHOP:
                         scaleMatrix(bishop, matrix, original_s, scaled_s, BLACK, -1);
                         break;
-                    case BLACK_KNIGHT:  
+                    case BLACK_KNIGHT:
                         scaleMatrix(knight, matrix, original_s, scaled_s, BLACK, -1);
                         break;
                     case BLACK_ROOK:
@@ -260,57 +268,71 @@ void printBoard(){
                     case BLACK_PAWN:
                         scaleMatrix(pawn, matrix, original_s, scaled_s, BLACK, -1);
                         break;
-                    }
-                    draw(matrix, scaled_s * i + initial_y, j * scaled_s + initial_x, scaled_s, scaled_s);
                 }
+                int iAux = i;
+                int jAux = j;
+                rotateIndex(&iAux, &jAux, DIM, rotation);
+                draw(matrix, scaled_s * iAux + initial_y, jAux * scaled_s + initial_x, scaled_s, scaled_s);
             }
-            
+        }
     }
-    /*
-    //Peones
-    //int matrix[scaled_s * scaled_s];
-    for(int i = 0 + initial_x; i < scaled_s * 8 + initial_x; i += scaled_s) {
-        scaleMatrix(pawn, matrix, original_s, scaled_s, WHITE, -1);
-        draw(matrix, scaled_s * 6 + initial_y, i, scaled_s, scaled_s);
-        scaleMatrix(pawn, matrix, original_s, scaled_s, BLACK, -1);
-        draw(matrix, scaled_s * 1 + initial_y, i, scaled_s, scaled_s);
-    }
-
-    //Torre
-    scaleMatrix(tower, matrix, original_s, scaled_s, BLACK, -1);
-    draw(matrix, 0 + initial_y, 0 + initial_x, scaled_s, scaled_s);
-    draw(matrix, 0 + initial_y, scaled_s * 7 + initial_x, scaled_s, scaled_s);
-    scaleMatrix(tower, matrix, original_s, scaled_s, WHITE, -1);
-    draw(matrix, scaled_s * 7 + initial_y, 0 + initial_x, scaled_s, scaled_s);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 7 + initial_x, scaled_s, scaled_s);
-
-    //Caballo
-    scaleMatrix(knight, matrix, original_s, scaled_s, BLACK, -1);
-    draw(matrix, 0 + initial_y, scaled_s * 1 + initial_x, scaled_s, scaled_s);
-    draw(matrix, 0 + initial_y, scaled_s * 6 + initial_x, scaled_s, scaled_s);
-    scaleMatrix(knight, matrix, original_s, scaled_s, WHITE, -1);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 1 + initial_x, scaled_s, scaled_s);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 6 + initial_x, scaled_s, scaled_s);
-
-    //Alfil
-    scaleMatrix(bishop, matrix, original_s, scaled_s, BLACK, -1);
-    draw(matrix, 0 + initial_y, scaled_s * 2 + initial_x, scaled_s, scaled_s);
-    draw(matrix, 0 + initial_y, scaled_s * 5 + initial_x, scaled_s, scaled_s);
-    scaleMatrix(bishop, matrix, original_s, scaled_s, WHITE, -1);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 2 + initial_x, scaled_s, scaled_s);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 5 + initial_x, scaled_s, scaled_s);
-
-    //Rey
-    scaleMatrix(king, matrix, original_s, scaled_s, BLACK, -1);
-    draw(matrix, 0 + initial_y, scaled_s * 4 + initial_x, scaled_s, scaled_s);
-    scaleMatrix(king, matrix, original_s, scaled_s, WHITE, -1);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 4 + initial_x, scaled_s, scaled_s);
-
-    //Reina
-    scaleMatrix(queen, matrix, original_s, scaled_s, BLACK, -1);
-    draw(matrix, 0 + initial_y, scaled_s * 3 + initial_x, scaled_s, scaled_s);
-    scaleMatrix(queen, matrix, original_s, scaled_s, WHITE, -1);
-    draw(matrix, scaled_s * 7 + initial_y, scaled_s * 3 + initial_x, scaled_s, scaled_s);
-    */
 }
 
+void rotate() {
+    rotation++;
+    rotation %= 4;
+}
+
+void printLog(){
+        /**
+     * Seria el log de jugadas
+     */
+
+    char * arrowFont = {
+            "_________"
+            "_________"
+            "____X____"
+            "___XXX___"
+            "__XXXXX__"
+            "_XXXXXXX_"
+            "XXXXXXXXX"
+            "_________"
+            "_________"
+    };
+
+    int arrow[9*9];
+    int cursor = 24;
+    int init_log_row = 80;
+    int color_log = 0xadadad;
+    //int color_time = 0xffc32b;
+    //int color_diff = 0x38ad34;
+
+    printcFrom("Player 1        Player 2", cursor, 740, 0xFFFFFF); cursor += 16;
+    cursor += 16;    cursor += 16; //aca se esta llamando para imprimir el time. 
+    //cursor estaria buena que fuera global al archivo
+    printcFrom("    a4d5        e6h3    ", cursor, 740, color_log);cursor += 16;
+    printcFrom("    e3a2        c8a3    ", cursor, 740, color_log);cursor += 16;
+    printcFrom("    a6e1        b5c3    ", cursor, 740, color_log);cursor += 16;
+    printcFrom("    d4f5        a2a3    ", cursor, 740, color_log);cursor += 16;
+    printcFrom("    g6h6        f3g6    ", cursor, 740, color_log);cursor += 16;
+
+    scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
+    draw(arrow, init_log_row, 956, 9, 9);
+}
+
+void printTime(int secondsWhite, int secondsBlack){
+    int color_time = 0xffc32b;
+    int color_diff = 0x38ad34;
+    int cursor = 40;
+    char aux[3] = {0};
+    itoa(secondsWhite, aux, 2);
+    printcFrom("   00:", cursor, 740, color_time);
+    printcFrom(aux,cursor,788,color_time);
+    itoa(secondsBlack, aux, 2);
+    printcFrom("        00:", cursor, 804, color_time);
+    printcFrom(aux,cursor,892,color_time);
+    cursor += 16;
+    printcFrom("         +00:", cursor, 740, color_diff);
+    itoa(abs(secondsBlack-secondsWhite), aux, 2);
+    printcFrom(aux,cursor,740+13*8,color_diff);
+}
