@@ -13,7 +13,7 @@
 #define INFO_REG 8
 #define MEM_DUMP 9
 #define CLEAR_SYSCALL 3
-#define ADD_ALARM 11
+#define SET_ALARM 11
 
 
 
@@ -48,8 +48,9 @@ int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t
 		case CLEAR_SYSCALL:
 			clearScreenHandler();
 			return 0;
-		case ADD_ALARM:
-			return addFunc((void *)firstP, secondP);
+		case SET_ALARM:
+			addFunc((void *)firstP, secondP);
+			return 0;
 		default:
 			return -1;
 	}

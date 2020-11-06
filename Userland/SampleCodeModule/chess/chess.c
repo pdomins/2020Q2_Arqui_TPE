@@ -23,7 +23,7 @@
 /**
  * Tablero
 **/
-char piecesName[] = {KING,QUEEN,ROOK,BISHOP,KNIGHT,PAWN}; // (piecesName[board[x][y][0] - 1)%6]
+char piecesName[] = {KING,QUEEN,ROOK,BISHOP,KNIGHT,PAWN}; // (piecesName[board[x][y][0] - 1)%6] ESTO SE USA??????
 int  board[8][8][3]={{{0}}}; // {posX, posY, vect[3] = {numPieza, 0/1 movimiento, color fondo}};
 void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow);
 void exit();
@@ -40,7 +40,6 @@ int kingDead = 0;
 int turns = 0;
 int exitSave = 0, exitWithoutSave = 0;
 int whiteTicks , blackTicks  = 0;
-int inGame = 0;
 int maxTimeReached = 0;
 int statusLine = 736;
 int line = 752; //Son pixeles
@@ -49,12 +48,10 @@ char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
 
 int timerReference;
 void incrementTimer(){
-    if(inGame){
-        if(isWhitesTurn())
-            whiteTicks++;
-        else
-            blackTicks++;
-    }
+    if(isWhitesTurn())
+        whiteTicks++;
+    else
+        blackTicks++;
 }
 
 int makeMove(int fromRow, int fromCol, int toRow, int toCol){
@@ -200,12 +197,10 @@ void clearLine() {
 }
 
 void pause(){
-    inGame = 0;
     exitSave = 1; //returns to shell
 }
 
 void exit(){
-    inGame = 0;
     exitWithoutSave = 1; //returns to shell
 }
 
@@ -218,9 +213,6 @@ void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
     blackTicks  = 0;
     maxTimeReached = 0;
     fillBoard();
-    ////syscall con puntero a funcion !!!!!!!!
-   // addAlarm(&incrementTimer, 15); //no se cual es el numero porque no hay multiplo lol 
-    //pero el 5 es multiplo de 15.
     //poner todo lo global en 0
 }
 
@@ -228,10 +220,9 @@ void runChess(int entry){
     if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
     clearScreen();
     printBoard();
-    timerReference = addAlarm(&incrementTimer, 1);
-    inGame = 1;
+    setAlarm(&incrementTimer, 1);
     play(); //setea exitSave=0 y llama a play
-    //SYSCALL SACAAAAAAAAAAAAAAR
+    setAlarm(&incrementTimer, 0);
 }
 
 void fillBoard() {

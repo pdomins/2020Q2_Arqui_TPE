@@ -10,8 +10,7 @@
 #define INFO_REG 8
 #define MEM_DUMP 9
 #define CLEAR_SYSCALL 3
-#define ADD_ALARM 11
-#define REMOVE_ALARM 12
+#define SET_ALARM 11
 
 int read(char * buffer, int length){
     _syscall(READ_SYSCALL, length, buffer);
@@ -43,10 +42,7 @@ void memoryDump(char * dir, char * dump) {
     _syscall(MEM_DUMP, dir, dump);
 }
 
-int addAlarm(void (*func) (void), int ticks){
-    return _syscall(ADD_ALARM, func, ticks);
+void setAlarm(void (*func) (void), int flag){
+    _syscall(SET_ALARM, func, flag);
 }
 
-void removeAlarm(int index){
-    _syscall(REMOVE_ALARM, index);
-}
