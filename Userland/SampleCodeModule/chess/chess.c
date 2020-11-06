@@ -52,7 +52,6 @@ int isWhitesTurn();
 
 int kingDead = 0;
 int turns = 0;
-int localGameStarted = 0;
 int paused = 0;
 int whiteTimer , blackTimer  = 0;
 
@@ -165,7 +164,6 @@ void play(){ //while kingDead != 0 && pausedd != 1
     if (!paused){
         /*HALT*/
     }
-    
     return;
 }
 void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow){
@@ -186,13 +184,15 @@ void pause(){
 }
 
 void exit(){
-    localGameStarted=0;
-    pause();
+    pause(); //TODO
 }
 void newGame(){
-    clearScreen();
+    kingDead = 0;
+    turns = 0;
+    paused = 0;
+    whiteTimer = 0;
+    blackTimer  = 0;
     fillBoard();
-    printBoard();
     
     ////syscall con puntero a funcion !!!!!!!!
    // addAlarm(&incrementTimer, 15); //no se cual es el numero porque no hay multiplo lol 
@@ -201,7 +201,9 @@ void newGame(){
 }
 
 void runChess(int entry){
-    if (entry == 0 || localGameStarted == 0) newGame(); //initializes or clears board
+    if (entry == 0) newGame(); //initializes or clears board
+    clearScreen();
+    printBoard();
     play(); //setea paused=0 y llama a play
 }
 

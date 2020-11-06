@@ -2,13 +2,15 @@
 #include <standardIO.h>
 #include <string.h>
 #include <chessHandler.h>
+#include <syscalls.h>
+
 
 /*
 Hola, esta es la funcion que llamamos desde apps para poder ejecutar el juego de ajedrez.
 Esta en una clase aparte por que es mucho codigo que no aporta a la logica del apps y nada mas molesta en espacio.
 */
 
-
+void greeting();
 char askYesNo();
 void printChessMenu();
 
@@ -51,7 +53,7 @@ char askYesNo(){
                         println("Need help? Enter chess help or chess -h to display a menu of the different options from which you can choose");
                         break;
                     }else if(ans == 'Y'){
-                        println("Starting a new chess game...");
+                        greeting(); //starting a new chess game
                         runChess(0);
                         break;
                     }else{
@@ -62,4 +64,28 @@ char askYesNo(){
             }
         }
     return ans;
+}
+
+void greeting(){
+    int screenHeigth = 0;
+    clearScreen();
+    printcFrom("  ______  __    __   _______     _______.     _______.",screenHeigth+=16,0,0xFFE81F);
+    printcFrom(" /      ||  |  |  | |   ____|   /       |    /       |",screenHeigth+=16,0,0xFFE81F);
+    printcFrom("|  ,----'|  |__|  | |  |__     |   (----`   |   (----`",screenHeigth+=16,0,0xFFE81F);
+    printcFrom("|  |     |   __   | |   __|     \\   \\        \\   \\    ",screenHeigth+=16,0,0xFFE81F);
+    printcFrom("|  `----.|  |  |  | |  |____.----)   |   .----)   |   ",screenHeigth+=16,0,0xFFE81F);
+    printcFrom(" \\______||__|  |__| |_______|_______/    |_______/    ",screenHeigth+=16,0,0xFFE81F);
+    screenHeigth+=16*2;
+    printFrom("In an OS far far away...",screenHeigth+=16,0);
+    screenHeigth+=16;
+    printFrom("Instructions:",screenHeigth+=16,0);
+    printFrom("Press ENTER to begin your adventure",screenHeigth+=16,0);
+    printFrom("Press \"q\" to quit without saving or \"p\" to pause your game",screenHeigth+=16,0);
+    printFrom("Insert your game plays in the following notation:",screenHeigth+=16,0);
+    printFrom("First, the coordinates from the piece you want to move, then to where you want to move it",screenHeigth+=16,0);
+    printFrom("for example, a1a3 moves the piece from the position a1 to a3",screenHeigth+=16,0);
+    screenHeigth+=16;
+    printFrom("Dont worry if you mistype or enter an invalid move! We will take care of that!",screenHeigth+=16,0);
+    printFrom("Enjoy!",screenHeigth+=16,0);
+    while ((getChar())!='\n');
 }
