@@ -142,6 +142,9 @@ void play(){
             }
             if(exitSave)
                 break;
+            if (exitWithoutSave)
+                break;
+            
             if(col >= 1024) {
                 col = 0;
                     
@@ -159,12 +162,12 @@ void play(){
             }
         } 
     }
-    clearScreen();
     if (!exitSave && !exitWithoutSave){
-        printFrom("ganaste logi",0,0);
+        printFrom("ganaste logi apreta enter para volver a la yel MAESTRO",statusLine,0);
         while ((getChar())!='\n');
     }
-    exitWithoutSave = 0;
+
+    clearScreen();
     return;
 }
 void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow){
@@ -184,9 +187,10 @@ void pause(){
 }
 
 void exit(){
-    exitWithoutSave = 1; //TODO
+    exitWithoutSave = 1; //returns to shell
 }
 void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
+    exitWithoutSave = 0;
     kingDead = 0;
     turns = 0;
     exitSave = 0;
@@ -200,7 +204,7 @@ void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
 }
 
 void runChess(int entry){
-    if (entry == 0) newGame(); //initializes or clears board
+    if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
     clearScreen();
     printBoard();
     play(); //setea exitSave=0 y llama a play
@@ -216,12 +220,13 @@ void fillBoard() {
             }
             
             board[i][j][MOVEMENTS] = 0;
+            board[i][j][PIECE] = 0;
         }        
     }
-    /*for(int i = 0; i < BOARD_SIZE; i++) {
+    for(int i = 0; i < BOARD_SIZE; i++) {
         board[1][i][PIECE] = BLACK_PAWN;
         board[6][i][PIECE] = WHITE_PAWN;
-    }*/
+    }
     board[0][0][PIECE] = BLACK_ROOK;
     board[0][1][PIECE] = BLACK_KNIGHT;
     board[0][2][PIECE] = BLACK_BISHOP;
