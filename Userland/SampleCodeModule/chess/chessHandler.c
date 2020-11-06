@@ -3,6 +3,9 @@
 #include <string.h>
 #include <chessHandler.h>
 #include <syscalls.h>
+#define SCREEN_HEIGTH 16
+#define YELLOW_GREETING 0xFFE81F
+#define MIDDLE_TITLE 296
 
 
 /*
@@ -16,7 +19,8 @@ void printChessMenu();
 
 void chessHandler(int args, char argv[][25]){
     if (args == 0 || strcmp(argv[1],"new")== 0 ||strcmp(argv[1],"-n")==0|| strcmp(argv[1],"start")== 0 ||strcmp(argv[1],"-s")== 0){
-        println("You're about to start a new chess game. Are you sure? [Y/n]");
+        if (hasPrevGame()) println("There's a game already loaded. Are you sure you want to start a new one? [Y/n]");
+        else println("You're about to start a new chess game. Are you sure? [Y/n]");
             askYesNo();        
     }else if (strcmp(argv[1],"resume")== 0 ||strcmp(argv[1],"-r")== 0||strcmp(argv[1],"continue")== 0 ||strcmp(argv[1],"-c")== 0){
             if (hasPrevGame()){
@@ -67,25 +71,25 @@ char askYesNo(){
 }
 
 void greeting(){
-    int screenHeigth = 0;
+    int heigth = 0;
     clearScreen();
-    printcFrom("  ______  __    __   _______     _______.     _______.",screenHeigth+=16,0,0xFFE81F);
-    printcFrom(" /      ||  |  |  | |   ____|   /       |    /       |",screenHeigth+=16,0,0xFFE81F);
-    printcFrom("|  ,----'|  |__|  | |  |__     |   (----`   |   (----`",screenHeigth+=16,0,0xFFE81F);
-    printcFrom("|  |     |   __   | |   __|     \\   \\        \\   \\    ",screenHeigth+=16,0,0xFFE81F);
-    printcFrom("|  `----.|  |  |  | |  |____.----)   |   .----)   |   ",screenHeigth+=16,0,0xFFE81F);
-    printcFrom(" \\______||__|  |__| |_______|_______/    |_______/    ",screenHeigth+=16,0,0xFFE81F);
-    screenHeigth+=16*2;
-    printFrom("In an OS far far away...",screenHeigth+=16,0);
-    screenHeigth+=16;
-    printFrom("Instructions:",screenHeigth+=16,0);
-    printFrom("Press ENTER to begin your adventure",screenHeigth+=16,0);
-    printFrom("Press \"q\" to quit without saving or \"p\" to pause your game",screenHeigth+=16,0);
-    printFrom("Insert your game plays in the following notation:",screenHeigth+=16,0);
-    printFrom("First, the coordinates from the piece you want to move, then to where you want to move it",screenHeigth+=16,0);
-    printFrom("for example, a1a3 moves the piece from the position a1 to a3",screenHeigth+=16,0);
-    screenHeigth+=16;
-    printFrom("Dont worry if you mistype or enter an invalid move! We will take care of that!",screenHeigth+=16,0);
-    printFrom("Enjoy!",screenHeigth+=16,0);
+    printcFrom("  ______  __    __   _______     _______.     _______.",heigth+=SCREEN_HEIGTH,MIDDLE_TITLE,YELLOW_GREETING);
+    printcFrom(" /      ||  |  |  | |   ____|   /       |    /       |",heigth+=SCREEN_HEIGTH,MIDDLE_TITLE,YELLOW_GREETING);
+    printcFrom("|  ,----'|  |__|  | |  |__     |   (----`   |   (----`",heigth+=SCREEN_HEIGTH,MIDDLE_TITLE,YELLOW_GREETING);
+    printcFrom("|  |     |   __   | |   __|     \\   \\        \\   \\    ",heigth+=SCREEN_HEIGTH,MIDDLE_TITLE,YELLOW_GREETING);
+    printcFrom("|  `----.|  |  |  | |  |____.----)   |   .----)   |   ",heigth+=SCREEN_HEIGTH,MIDDLE_TITLE,YELLOW_GREETING);
+    printcFrom(" \\______||__|  |__| |_______|_______/    |_______/    ",heigth+=SCREEN_HEIGTH,MIDDLE_TITLE,YELLOW_GREETING);
+    heigth+=SCREEN_HEIGTH*2;
+    printFrom("In an OS far, far away...",heigth+=SCREEN_HEIGTH,416);
+    heigth+=SCREEN_HEIGTH;
+    printFrom("Instructions:",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Press ENTER to begin your adventure",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Press \"q\" to quit without saving or \"p\" to pause your game",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Insert your game plays in the following notation:",heigth+=SCREEN_HEIGTH,0);
+    printFrom("First, the coordinates of the piece you want to move, then to where you want to move it",heigth+=SCREEN_HEIGTH,0);
+    printFrom("For example, a1a3 moves the piece from the position a1 to a3",heigth+=SCREEN_HEIGTH,0);
+    heigth+=SCREEN_HEIGTH;
+    printFrom("Dont worry if you mistype or enter an invalid move! We will take care of that!",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Enjoy!",heigth+=SCREEN_HEIGTH,0);
     while ((getChar())!='\n');
 }

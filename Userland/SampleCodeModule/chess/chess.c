@@ -10,7 +10,7 @@
 #define KING 'K' 
 #define QUEEN 'Q'
 #define ROOK 'R' //torres
-#define BISHOP 'B' //alfil
+#define BISHOP 'B' //aka bicho
 #define KNIGHT 'N' // N of kNight cause K was alreardy TAKEN BY SOMEONE ...
 #define PAWN 'P'
 #define BOARD_SIZE 8
@@ -52,7 +52,7 @@ int isWhitesTurn();
 
 int kingDead = 0;
 int turns = 0;
-int paused = 0;
+int exitSave = 0, exitWithoutSave = 0;
 int whiteTimer , blackTimer  = 0;
 
 int statusLine = 736;
@@ -100,27 +100,25 @@ void kingEaten(){
     kingDead = 1;
 }
 int hasPrevGame(){
-    return paused;
+    return exitSave;
 }
 
 int isWhitesTurn(){
     return turns%2==0;
 }
 
-void play(){ //while kingDead != 0 && pausedd != 1
-    paused = 0;
+void play(){
+    exitSave = 0;
     char buffer[100] = {0};
-    while(!kingDead && !paused){
+    while(!kingDead && !exitSave && !exitWithoutSave){
         char c;
         int position = 0;
         while ((c = getChar())!='\n'){
             if (c!=0){
-                switch (c)
-                {
+                switch (c){
                 case '\b':
                     if (position > 0){
                         buffer[--position] = 0;
-                        //removeChar();
                         if(col >= 0) {
                             col -= 8;
                         }
@@ -142,7 +140,7 @@ void play(){ //while kingDead != 0 && pausedd != 1
                     break;
                 } 
             }
-            if(paused)
+            if(exitSave)
                 break;
             if(col >= 1024) {
                 col = 0;
@@ -161,9 +159,12 @@ void play(){ //while kingDead != 0 && pausedd != 1
             }
         } 
     }
-    if (!paused){
-        /*HALT*/
+    clearScreen();
+    if (!exitSave && !exitWithoutSave){
+        printFrom("ganaste logi",0,0);
+        while ((getChar())!='\n');
     }
+    exitWithoutSave = 0;
     return;
 }
 void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow){
@@ -179,21 +180,19 @@ void clearLine() {
 }
 
 void pause(){
-    clearScreen();
-    paused = 1; //returns to shell
+    exitSave = 1; //returns to shell
 }
 
 void exit(){
-    pause(); //TODO
+    exitWithoutSave = 1; //TODO
 }
-void newGame(){
+void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
     kingDead = 0;
     turns = 0;
-    paused = 0;
+    exitSave = 0;
     whiteTimer = 0;
     blackTimer  = 0;
     fillBoard();
-    
     ////syscall con puntero a funcion !!!!!!!!
    // addAlarm(&incrementTimer, 15); //no se cual es el numero porque no hay multiplo lol 
     //pero el 5 es multiplo de 15.
@@ -204,7 +203,7 @@ void runChess(int entry){
     if (entry == 0) newGame(); //initializes or clears board
     clearScreen();
     printBoard();
-    play(); //setea paused=0 y llama a play
+    play(); //setea exitSave=0 y llama a play
 }
 
 void fillBoard() {

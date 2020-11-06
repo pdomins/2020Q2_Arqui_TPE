@@ -33,9 +33,19 @@ void setToMovedPiece(int x,int y){
     board[x][y][MOVEMENTS] = 1;
 }
 
+int sameTeam(int fromRow,int fromCol,int toRow,int toCol){
+    if (board[toRow][toCol][PIECE]!= 0){
+        return isWhitePiece(board[toRow][toCol][PIECE])==isWhitePiece(board[fromRow][fromCol][PIECE]);
+    }
+    return 0;
+    
+}
+
 int move(int (*func) (int,int,int,int),int fromRow,int fromCol,int toRow,int toCol){
     if (func(fromRow,fromCol,toRow,toCol)){
         checkIfKing(board[toRow][toCol][PIECE]); //checks if the piece to be eaten is a king
+        if (sameTeam(fromRow,fromCol,toRow,toCol))
+            return 0;
         board[toRow][toCol][PIECE] = board[fromRow][fromCol][PIECE];
         setToMovedPiece(toRow, toCol);
         board[fromRow][fromCol][PIECE] = 0;
@@ -100,34 +110,26 @@ int isValidBishopPath(int fromRow, int fromCol,int toRow, int toCol){
     int i = fromRow, j = fromCol;
     if(fromRow < toRow){ // Baja
         if(fromCol < toCol){ //Derecha
-            while( i != toRow){
+            while( ++i != toRow && ++j != toCol){
                 if(board[i][j][PIECE] != 0)
                     return 0;
-                i++;
-                j++;
             }
         } else { //izquierda
-            while( i != toRow){
+            while( ++i != toRow && --j!=toCol){
                 if(board[i][j][PIECE] != 0)
                     return 0;
-                i++;
-                j--;
             } 
         }
     } else { //Sube
         if(fromCol < toCol) { //Derecha
-            while( i != toRow) {
+            while( --i != toRow && ++j != toCol) {
                 if(board[i][j][PIECE] != 0) 
-                    return 0;
-                i--;
-                j++;   
+                    return 0;   
             }
         } else { //Izquierda
-            while( i != toRow) {
+            while( --i != toRow && --j != toCol) {
                 if(board[i][j][PIECE] != 0) 
                     return 0;
-                i--;
-                j--;   
             }
         }
     }
