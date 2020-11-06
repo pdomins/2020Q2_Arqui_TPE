@@ -8,11 +8,9 @@ int enabled = 0;
 
 void timer_handler() {
 	ticks++;
-	/*
 	if(enabled){
 		function();
 	}
-	*/
 }
 
 int ticks_elapsed() {
