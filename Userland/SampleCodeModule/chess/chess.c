@@ -9,8 +9,6 @@
 #define INSTRUCTION_LENGTH 4
 #define MAX_TIME 500
 
-#define IS_ALPHA(c) ( (c <= '9' && c >= '0') || (c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') )
-
 /*      B   N
     K = 1 / 7
     Q = 2 / 8
@@ -25,16 +23,17 @@
 **/
 char piecesName[] = {KING,QUEEN,ROOK,BISHOP,KNIGHT,PAWN}; // (piecesName[board[x][y][0] - 1)%6] ESTO SE USA??????
 int  board[8][8][3]={{{0}}}; // {posX, posY, vect[3] = {numPieza, 0/1 movimiento, color fondo}};
-void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow);
-void exit();
 
-void init();
+void newGame();
 void play();
-void fillBoard();
-void clearLine(); //Limpia la linea donde se escriben los comandos
 void pause(); //pausa el juego
-void printBoard();
+void exit();
+void fillBoard();
+void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow);
+int makeMove(int fromRow, int fromCol, int toRow, int toCol);
 int isWhitesTurn();
+void incrementTimer();
+void clearLine(); //Limpia la linea donde se escriben los comandos
 
 int kingDead = 0;
 int turns = 0;
@@ -46,52 +45,25 @@ int line = 752; //Son pixeles
 int col = 0;
 char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
 
-int timerReference;
-void incrementTimer(){
-    if(isWhitesTurn())
-        whiteTicks++;
-    else
-        blackTicks++;
+void runChess(int entry){
+    if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
+    clearScreen();
+    printBoard();
+    setAlarm(&incrementTimer, 1);
+    play(); //setea exitSave=0 y llama a play
+    setAlarm(&incrementTimer, 0);
 }
 
-int makeMove(int fromRow, int fromCol, int toRow, int toCol){
-    if(!isValidCoord(fromRow,fromCol)) return 0;
-    if ((isWhitePiece(board[fromRow][fromCol][PIECE]) && !isWhitesTurn()) ||
-            (!isWhitePiece(board[fromRow][fromCol][PIECE]) && isWhitesTurn())) 
-                return 0;
-    switch (board[fromRow][fromCol][0]){
-        case WHITE_KING:
-        case BLACK_KING: 
-            return moveKing(fromRow,fromCol,toRow,toCol);
-        case WHITE_QUEEN:
-        case BLACK_QUEEN: 
-            return moveQueen(fromRow,fromCol,toRow,toCol);
-        case WHITE_BISHOP:
-        case BLACK_BISHOP: 
-            return moveBishop(fromRow,fromCol,toRow,toCol);
-        case WHITE_KNIGHT:
-        case BLACK_KNIGHT: 
-            return moveKnight(fromRow,fromCol,toRow,toCol);
-        case WHITE_ROOK:
-        case BLACK_ROOK: 
-            return moveRook(fromRow,fromCol,toRow,toCol);
-        case WHITE_PAWN:
-        case BLACK_PAWN:
-            return movePawn(fromRow,fromCol,toRow,toCol);
-        default:
-            return 0;
-    }
-    return 0;
-}
-void kingEaten(){
-    kingDead = 1;
-}
-int hasPrevGame(){
-    return exitSave;
-}
-
-int isWhitesTurn(){
-    return turns%2==0;
+void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
+    exitWithoutSave = 0;
+    kingDead = 0;
+    turns = 0;
+    exitSave = 0;
+    whiteTicks = 0;
+    blackTicks  = 0;
+    maxTimeReached = 0;
+    fillBoard();
+    //poner todo lo global en 0
 }
 
 void play(){
@@ -184,16 +156,8 @@ void play(){
     return;
 }
 
-void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow){
-    toMayus(buffer);
-    *fromCol = buffer[0] - 'A';
-    *fromRow = 7 - (buffer[1] - '0' -1);
-    *toCol = buffer[2] - 'A';
-    *toRow = 7 - (buffer[3] - '0' - 1);
-}
-
-void clearLine() {
-    printFrom("                                                                                                ", line, col);
+int hasPrevGame(){
+    return exitSave;
 }
 
 void pause(){
@@ -202,27 +166,6 @@ void pause(){
 
 void exit(){
     exitWithoutSave = 1; //returns to shell
-}
-
-void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
-    exitWithoutSave = 0;
-    kingDead = 0;
-    turns = 0;
-    exitSave = 0;
-    whiteTicks = 0;
-    blackTicks  = 0;
-    maxTimeReached = 0;
-    fillBoard();
-    //poner todo lo global en 0
-}
-
-void runChess(int entry){
-    if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
-    clearScreen();
-    printBoard();
-    setAlarm(&incrementTimer, 1);
-    play(); //setea exitSave=0 y llama a play
-    setAlarm(&incrementTimer, 0);
 }
 
 void fillBoard() {
@@ -261,4 +204,59 @@ void fillBoard() {
     board[7][7][PIECE] = WHITE_ROOK;
 }
 
+void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int *toRow){
+    toMayus(buffer);
+    *fromCol = buffer[0] - 'A';
+    *fromRow = 7 - (buffer[1] - '0' -1);
+    *toCol = buffer[2] - 'A';
+    *toRow = 7 - (buffer[3] - '0' - 1);
+}
 
+int makeMove(int fromRow, int fromCol, int toRow, int toCol){
+    if(!isValidCoord(fromRow,fromCol)) return 0;
+    if ((isWhitePiece(board[fromRow][fromCol][PIECE]) && !isWhitesTurn()) ||
+            (!isWhitePiece(board[fromRow][fromCol][PIECE]) && isWhitesTurn())) 
+                return 0;
+    switch (board[fromRow][fromCol][0]){
+        case WHITE_KING:
+        case BLACK_KING: 
+            return moveKing(fromRow,fromCol,toRow,toCol);
+        case WHITE_QUEEN:
+        case BLACK_QUEEN: 
+            return moveQueen(fromRow,fromCol,toRow,toCol);
+        case WHITE_BISHOP:
+        case BLACK_BISHOP: 
+            return moveBishop(fromRow,fromCol,toRow,toCol);
+        case WHITE_KNIGHT:
+        case BLACK_KNIGHT: 
+            return moveKnight(fromRow,fromCol,toRow,toCol);
+        case WHITE_ROOK:
+        case BLACK_ROOK: 
+            return moveRook(fromRow,fromCol,toRow,toCol);
+        case WHITE_PAWN:
+        case BLACK_PAWN:
+            return movePawn(fromRow,fromCol,toRow,toCol);
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+int isWhitesTurn(){
+    return turns%2==0;
+}
+
+void kingEaten(){
+    kingDead = 1;
+}
+
+void incrementTimer(){
+    if(isWhitesTurn())
+        whiteTicks++;
+    else
+        blackTicks++;
+}
+
+void clearLine() {
+    printFrom("                                                                                                ", line, col);
+}

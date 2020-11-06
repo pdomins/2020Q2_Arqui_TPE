@@ -13,10 +13,10 @@ extern int board[8][8][3];
 int rotation = 0;
 
 void printBoard(){
-    int original_s = 16;
-    int scaled_s = 80; //Size de los cuadrados
-    int initial_x = 32;
-    int initial_y = 32;
+    int original_s = 16; //Size de la font
+    int scaled_s = 80; //Size de los cuadrados 
+    int initial_x = 32; //Posicion inicial del tablero
+    int initial_y = 32; //Posicion inicial del tablero
 
     char * pawn  = {
              "________________"
@@ -152,9 +152,9 @@ void printBoard(){
     int leftCol = initial_x / 2;
     int bottomRow = initial_y + scaled_s * DIM;
     int topRow = 8;
-    char * buffer = {0};
+    char buffer[2] = {0};
     switch(rotation) {
-        case 0:
+        case 0: //Rotacion 0°
             for(int i = 0; i < DIM; i++) {
                 *buffer = '0' + DIM - i; //Izquierda y Derecha
                 printFrom(buffer, row, leftCol); //Izquierda
@@ -278,9 +278,21 @@ void printBoard(){
     }
 }
 
-void rotate() {
-    rotation++;
-    rotation %= 4;
+void printTime(int secondsWhite, int secondsBlack){
+    int color_time = 0xffc32b;
+    int color_diff = 0x38ad34;
+    int cursor = 40;
+    char aux[3] = {0};
+    itoa(secondsWhite, aux, 2);
+    printcFrom("   00:", cursor, 740, color_time);
+    printcFrom(aux,cursor,788,color_time);
+    itoa(secondsBlack, aux, 2);
+    printcFrom("        00:", cursor, 804, color_time);
+    printcFrom(aux,cursor,892,color_time);
+    cursor += 16;
+    printcFrom("         +00:", cursor, 740, color_diff);
+    itoa(abs(secondsBlack-secondsWhite), aux, 2);
+    printcFrom(aux,cursor,740+13*8,color_diff);
 }
 
 void printLog(){
@@ -320,19 +332,7 @@ void printLog(){
     draw(arrow, init_log_row, 956, 9, 9);
 }
 
-void printTime(int secondsWhite, int secondsBlack){
-    int color_time = 0xffc32b;
-    int color_diff = 0x38ad34;
-    int cursor = 40;
-    char aux[3] = {0};
-    itoa(secondsWhite, aux, 2);
-    printcFrom("   00:", cursor, 740, color_time);
-    printcFrom(aux,cursor,788,color_time);
-    itoa(secondsBlack, aux, 2);
-    printcFrom("        00:", cursor, 804, color_time);
-    printcFrom(aux,cursor,892,color_time);
-    cursor += 16;
-    printcFrom("         +00:", cursor, 740, color_diff);
-    itoa(abs(secondsBlack-secondsWhite), aux, 2);
-    printcFrom(aux,cursor,740+13*8,color_diff);
+void rotate() {
+    rotation++;
+    rotation %= 4;
 }

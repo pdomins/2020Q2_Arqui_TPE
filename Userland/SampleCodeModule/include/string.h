@@ -3,6 +3,9 @@
 #include <types.h>
 #include <stdint.h>
 
+#define IS_ALPHA(c) ( (c <= '9' && c >= '0') || (c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') )
+
+
 void toMayus(char * string);
 void itoa(int value, char* buffer, int length);
 void dateToString(date myDate,char *buffer,char separator, int length);
