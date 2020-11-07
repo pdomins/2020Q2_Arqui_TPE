@@ -283,3 +283,11 @@ void incrementTimer(){
 void clearLine(int line) {
     printFrom("                                                                                                ", line, col);
 }
+
+int getWhiteTime(){
+    return whiteTicks/18;
+}
+
+int getBlackTime(){
+    return blackTicks/18;
+}

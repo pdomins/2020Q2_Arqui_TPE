@@ -20,6 +20,9 @@ enum pieces {WHITE_KING = 1, WHITE_QUEEN, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK
 void runChess(int entry);
 int hasPrevGame();
 void kingEaten();
+int isWhitesTurn();
 void clearLine(int line);
+int getWhiteTime();
+int getBlackTime();
 
 #endif
