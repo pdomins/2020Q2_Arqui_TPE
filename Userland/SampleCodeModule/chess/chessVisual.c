@@ -9,6 +9,9 @@
 #define CHAR_HEIGHT 16
 #define CHAR_WIDTH 8
 
+#define statusLine 736
+#define commandLine 752
+
 extern int board[8][8][3];
 int rotation = 0;
 
@@ -279,29 +282,48 @@ void printBoard(){
 }
 
 void printTime(int secondsWhite, int secondsBlack){
+    int timeDiff = abs(secondsBlack-secondsWhite);
+    int minWhite = secondsWhite / 60;
+    secondsWhite %= 60;
+    int minBlack = secondsBlack/ 60;
+    secondsBlack %= 60;
     int color_time = 0xffc32b;
     int color_diff = 0x38ad34;
     int cursor = 40;
-    char aux[3] = {0};
-    itoa(secondsWhite, aux, 2);
-    printcFrom("   00:", cursor, 740, color_time);
+    char aux[22] = {0};
+    for(int i = 0; i < 22 - 1 ; i++){
+        aux[i]= ' ';
+    }
+    aux[5] = ':'; aux[18] = ':';
+    itoa(minWhite, aux + 3, 2);
+    itoa(secondsWhite, aux + 6, 2);
+    itoa(minBlack, aux + 16, 2);
+    itoa(secondsBlack, aux + 19, 2);   
+    printcFrom(aux, cursor, 740, color_time);
+    /*printcFrom(aux, cursor, 764, color_time);
+    printcFrom(":", cursor, 780, color_time);
     printcFrom(aux,cursor,788,color_time);
-    itoa(secondsBlack, aux, 2);
-    printcFrom("        00:", cursor, 804, color_time);
-    printcFrom(aux,cursor,892,color_time);
-    cursor += 16;
-    printcFrom("         +00:", cursor, 740, color_diff);
-    itoa(abs(secondsBlack-secondsWhite), aux, 2);
-    printcFrom(aux,cursor,740+13*8,color_diff);
+    
+    printcFrom("        ", cursor, 804, color_time);
+    printcFrom(aux, cursor, 764, color_time);
+
+    printcFrom(aux,cursor,892,color_time);*/
+    cursor += CHAR_HEIGHT;
+    char difference[16] = {0};
+    for(int i = 0; i < 16 - 1; i++) {
+        difference[i] = ' ';
+    }
+    difference[9]='+';
+    difference[12]=':';
+    itoa(timeDiff / 60, difference + 10, 2);
+    itoa(timeDiff % 60, difference + 13, 2);
+    printcFrom(difference,cursor,740,color_diff);
 }
-
-void printLog(){
-        /**
-     * Seria el log de jugadas
-     */
-
-    char * arrowFont = {
-            "_________"
+extern char whiteMoves[50][5];
+extern char blackMoves[50][5];
+int color_log = 0xadadad;
+     char * arrowFont = {
+            /*"_________"
             "_________"
             "____X____"
             "___XXX___"
@@ -309,28 +331,82 @@ void printLog(){
             "_XXXXXXX_"
             "XXXXXXXXX"
             "_________"
-            "_________"
+            "_________"*/
+            "______X__"
+            "_____XX__"
+            "____XXX__"
+            "___XXXX__"
+            "__XXXXX__"
+            "___XXXX__"
+            "____XXX__"
+            "_____XX__"
+            "______X__"
     };
 
     int arrow[9*9];
-    int cursor = 24;
-    int init_log_row = 80;
+
+    char * delete = {
+            "_________"
+            "_________"
+            "_________"
+            "_________"
+            "_________"
+            "_________"
+            "_________"
+            "_________"
+            "_________"
+    };
+
+    int deletion[9*9];
+
+int logCursor;
+int init_log_row;
+extern int turns;
+
+void printLog(){
+    logCursor = 24;
     int color_log = 0xadadad;
-    //int color_time = 0xffc32b;
-    //int color_diff = 0x38ad34;
+    init_log_row = 80;
+        
 
-    printcFrom("Player 1        Player 2", cursor, 740, 0xFFFFFF); cursor += 16;
-    cursor += 16;    cursor += 16; //aca se esta llamando para imprimir el time. 
-    //cursor estaria buena que fuera global al archivo
-    printcFrom("    a4d5        e6h3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    e3a2        c8a3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    a6e1        b5c3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    d4f5        a2a3    ", cursor, 740, color_log);cursor += 16;
-    printcFrom("    g6h6        f3g6    ", cursor, 740, color_log);cursor += 16;
+    printcFrom("Player 1        Player 2", (logCursor%704), 740, color_log); 
+    logCursor += (CHAR_HEIGHT * 3);
+    logCursor += 16;
 
-    scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
-    draw(arrow, init_log_row, 956, 9, 9);
+    for(int i = 0 ; i < (turns/2) +1; i++){
+        if(whiteMoves[i]!=0){
+        printcFrom(whiteMoves[i],(logCursor%704), 740+4*8, color_log);
+        scaleMatrix(delete, deletion, 9, 9, -1, 0x0);
+        scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
+        draw(deletion, init_log_row, 956, 9, 9);
+        draw(arrow, init_log_row+=16, 956, 9, 9);
+        }
+        if(blackMoves[i]!=0){
+            printcFrom(blackMoves[i],(logCursor%704), 740+16*8, color_log);
+            logCursor += 16;
+        }
+    }
+    
+    
 }
+
+void updateLog(char *buffer,int turn){
+    
+
+    if(turn%2==0){
+        printcFrom(buffer, (logCursor%704), 740+4*8, color_log);
+        printcFrom("It's player 2 turn",statusLine, 0, color_log);
+        scaleMatrix(delete, deletion, 9, 9, -1, 0x0);
+        scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
+        draw(deletion, init_log_row, 956, 9, 9);
+        draw(arrow, init_log_row+=16, 956, 9, 9);
+
+    }else{
+        printcFrom(buffer,(logCursor%704), 740+16*8, color_log); logCursor+=16;
+        printcFrom("It's player 1 turn", statusLine, 0, 0xFFFFFF);
+    }
+}
+
 
 void rotate() {
     rotation++;

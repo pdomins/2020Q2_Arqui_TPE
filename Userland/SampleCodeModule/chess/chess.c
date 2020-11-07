@@ -7,7 +7,10 @@
 #include <maths.h>
 
 #define INSTRUCTION_LENGTH 4
-#define MAX_TIME 500
+#define MAX_TIME 1090
+
+#define statusLine 736
+#define commandLine 752
 
 /*      B   N
     K = 1 / 7
@@ -33,23 +36,25 @@ void parseInstruction(char* buffer, int *fromCol, int *fromRow, int *toCol, int 
 int makeMove(int fromRow, int fromCol, int toRow, int toCol);
 int isWhitesTurn();
 void incrementTimer();
-void clearLine(); //Limpia la linea donde se escriben los comandos
+void clearLine(int Line); //Limpia la linea donde se escriben los comandos
+void logsHandler(char buffer[3]);
 
 int kingDead = 0;
 int turns = 0;
 int exitSave = 0, exitWithoutSave = 0;
 int whiteTicks , blackTicks  = 0;
 int maxTimeReached = 0;
-int statusLine = 736;
-int line = 752; //Son pixeles
+//int statusLine = 736;
+//int commandLine = 752; //Son pixeles
 int col = 0;
 char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
 
 void runChess(int entry){
-    if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
     clearScreen();
+    if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
     printBoard();
     setAlarm(&incrementTimer, 1);
+    printLog();
     play(); //setea exitSave=0 y llama a play
     setAlarm(&incrementTimer, 0);
 }
@@ -81,7 +86,7 @@ void play(){
                             if(col >= 0) {
                                 col -= 8;
                             }
-                            putCharFrom(' ', line, col);
+                            putCharFrom(' ', commandLine, col);
                         }
                         break;
                     case 'p':
@@ -100,7 +105,7 @@ void play(){
                     default:
                         if (position<10 && IS_ALPHA(c)){
                         buffer[position++] = c;
-                        putCharFrom(c, line, col);
+                        putCharFrom(c, commandLine, col);
                         col += 8;
                         }
                         break;
@@ -122,25 +127,24 @@ void play(){
             }
             printTime(whiteTicks/18,blackTicks/18);
         }
+        buffer[position] = 0;
         col = 0;
-        clearLine();
-        
-        if(position == INSTRUCTION_LENGTH){
+        clearLine(commandLine);
+        int moved = 0;
+        if(strcmp(buffer, "00") == 0){
+            moved = shortCastling(turns);
+        } else if(strcmp(buffer, "000") == 0){
+            moved = longCastling(turns);
+        } else if(position == INSTRUCTION_LENGTH){
             int fromCol, fromRow, toCol, toRow;
             parseInstruction(buffer, &fromCol, &fromRow, &toCol, &toRow);
-            if (makeMove(fromRow,fromCol,toRow,toCol)){
-                switch (turns%2)
-                {
-                case 0:
-                    strcpy(whiteMoves[(int)turns/2],buffer);
-                    break;
-                case 1:
-                    strcpy(blackMoves[(int)turns/2],buffer);
-                    break;
-                }
-                turns++; //si es un movimiento valido, cambio de turno
-                printBoard();
-            }
+            moved = makeMove(fromRow,fromCol,toRow,toCol);
+        }
+
+        if(moved) {
+            logsHandler(buffer);
+            turns++; //si es un movimiento valido, cambio de turno
+            printBoard();
         }
     }
 
@@ -149,11 +153,24 @@ void play(){
         while ((getChar())!='\n');
     }else if (maxTimeReached){
         printFrom("inactivity. apreta enter para volver a yel",statusLine,0);
-        while ((getChar())!='\n');        clearLine();
-
+        while ((getChar())!='\n');
+        clearLine(commandLine);
     }
+
     clearScreen();
     return;
+}
+
+void logsHandler(char * buffer){
+    switch (turns%2){
+        case 0:
+            strcpy(whiteMoves[(int)turns/2],buffer);
+            break;
+        case 1:
+            strcpy(blackMoves[(int)turns/2],buffer);
+            break;
+    }
+    updateLog(buffer,turns);
 }
 
 int hasPrevGame(){
@@ -185,6 +202,9 @@ void fillBoard() {
         board[1][i][PIECE] = BLACK_PAWN;
         board[6][i][PIECE] = WHITE_PAWN;
     }
+    //board[1][6][PIECE] = WHITE_PAWN;
+    //board[6][7][PIECE] = BLACK_PAWN;
+
     board[0][0][PIECE] = BLACK_ROOK;
     board[0][1][PIECE] = BLACK_KNIGHT;
     board[0][2][PIECE] = BLACK_BISHOP;
@@ -257,6 +277,6 @@ void incrementTimer(){
         blackTicks++;
 }
 
-void clearLine() {
+void clearLine(int line) {
     printFrom("                                                                                                ", line, col);
 }

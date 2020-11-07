@@ -9,6 +9,8 @@
 
 void printBoard();
 void printTime(int whiteSecs,int blackSecs);
+void printLog();
+void updateLog(char *buffer,int turns);
 void rotate();
 
 #endif

@@ -4,6 +4,12 @@
 #include <string.h>
 #include <standardIO.h>
 
+#define WHITES_TURN 0
+#define BLACK_TURN 1
+
+#define statusLine 736
+#define commandLine 752
+
 extern int board[8][8][3];
 int isWhitePiece(int pieceNumber);
 int isValidCoord(int toRow, int toCol);
@@ -15,6 +21,9 @@ int checkKing(int fromRow,int fromCol,int toRow,int toCol);
 int checkRook(int fromRow,int fromCol,int toRow,int toCol);
 int checkBishop(int fromRow,int fromCol,int toRow,int toCol);
 int checkQueen(int fromRow,int fromCol,int toRow,int toCol);
+void checkIfKing(int piece);
+int checkPromotion(int fromRow,int fromCol,int toRow,int toCol);
+void promote(int toRow,int toCol);
 
 /*      B   N
     K = 1 / 7
@@ -47,6 +56,10 @@ int move(int (*func) (int,int,int,int),int fromRow,int fromCol,int toRow,int toC
         if (sameTeam(fromRow,fromCol,toRow,toCol))
             return 0;
         board[toRow][toCol][PIECE] = board[fromRow][fromCol][PIECE];
+        
+        if(checkPromotion(fromRow, fromCol, toRow, toCol)) {
+            promote(toRow, toCol);
+        }
         setToMovedPiece(toRow, toCol);
         board[fromRow][fromCol][PIECE] = 0;
         return 1;
@@ -77,6 +90,74 @@ int moveBishop(int fromRow,int fromCol,int toRow,int toCol){
 
 int moveQueen(int fromRow,int fromCol,int toRow,int toCol){
     return move(checkQueen,fromRow,fromCol,toRow,toCol);
+}
+
+int isWhiteTurn(int turn){
+    return turn%2==0;
+}
+
+int shortCastling(int turn) {
+    if(isWhiteTurn(turn)){
+        if (board[7][4][PIECE] == WHITE_KING && board[7][7][PIECE] == WHITE_ROOK &&
+            board[7][4][MOVEMENTS] == 0 && board[7][7][MOVEMENTS] == 0 && 
+            board[7][6][PIECE] == 0 && board[7][5][PIECE] == 0 ) {
+                //Movemos el rey
+                board[7][6][PIECE] = WHITE_KING;
+                board[7][6][MOVEMENTS] = 1;
+                //Movemos la torre
+                board[7][5][PIECE] = WHITE_ROOK;
+                board[7][5][MOVEMENTS] = 1;
+                //Vaciamos las casillas donde estaban el rey y la torre
+                board[7][4][PIECE] = 0;
+                board[7][7][PIECE] = 0;
+                return 1;
+            }
+    } else {
+        if (board[0][4][PIECE] == BLACK_KING && board[0][7][PIECE] == BLACK_ROOK &&
+            board[0][4][MOVEMENTS] == 0 && board[0][7][MOVEMENTS] == 0 &&
+            board[0][6][PIECE] == 0 && board[0][5][PIECE] == 0){
+                board[0][6][PIECE] = BLACK_KING;
+                board[0][6][MOVEMENTS] = 1;
+                board[0][5][PIECE] = BLACK_ROOK;
+                board[0][5][MOVEMENTS] = 1;
+                board[0][4][PIECE] = 0;
+                board[0][7][PIECE] = 0;
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int longCastling(int turn) {
+    if(isWhiteTurn(turn)){
+        if (board[7][4][PIECE] == WHITE_KING && board[7][0][PIECE] == WHITE_ROOK &&
+            board[7][4][MOVEMENTS] == 0 && board[7][0][MOVEMENTS] == 0 && 
+            board[7][1][PIECE] == 0 && board[7][2][PIECE] == 0  && board[7][3][PIECE]== 0) {
+                //Movemos el rey
+                board[7][2][PIECE] = WHITE_KING;
+                board[7][2][MOVEMENTS] = 1;
+                //Movemos la torre
+                board[7][3][PIECE] = WHITE_ROOK;
+                board[7][3][MOVEMENTS] = 1;
+                //Vaciamos las casillas donde estaban el rey y la torre
+                board[7][4][PIECE] = 0;
+                board[7][0][PIECE] = 0;
+                return 1;
+            }
+    } else {
+        if (board[0][4][PIECE] == BLACK_KING && board[0][0][PIECE] == BLACK_ROOK &&
+            board[0][4][MOVEMENTS] == 0 && board[0][0][MOVEMENTS] == 0 &&
+            board[0][1][PIECE] == 0 && board[0][2][PIECE] == 0 && board[0][3][PIECE] == 0){
+                board[0][2][PIECE] = BLACK_KING;
+                board[0][2][MOVEMENTS] = 1;
+                board[0][3][PIECE] = BLACK_ROOK;
+                board[0][3][MOVEMENTS] = 1;
+                board[0][4][PIECE] = 0;
+                board[0][0][PIECE] = 0;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 /*
@@ -256,4 +337,53 @@ Returns 1 if it's a valid move, 0 if not.
 */
 int checkQueen(int fromRow,int fromCol,int toRow,int toCol){
     return checkBishop(fromRow,fromCol,toRow,toCol) || checkRook(fromRow,fromCol,toRow,toCol);
+}
+
+int checkPromotion(int fromRow,int fromCol,int toRow,int toCol) {
+    if(board[fromRow][fromCol][PIECE] == WHITE_PAWN) {
+        if(toRow == 0) {
+            return 1;
+        }
+    } else if(board[fromRow][fromCol][PIECE] == BLACK_PAWN) {
+        if(toRow == 7) {
+            return 1;
+        }
+    } 
+    return 0;
+}
+
+static int validPromotion(char option){
+    char buffer[2] = {0};
+    buffer[0] = option;
+    toMayus(buffer);
+    option = buffer[0];
+    return option == 'Q' || option == 'R' || option == 'N' || option == 'B';
+}
+
+void promote(int toRow,int toCol) {
+    int toAdd = (toRow == 0) ? 0 : 6;
+    char option;
+    printcFrom("Promotion: 'Q':Queen 'R':Rook 'N':Knight 'B'Bishop", statusLine, 0,  0xfcba03);
+    while ( !validPromotion(option = getChar()));
+    switch (option)
+    {
+        case 'q':
+        case 'Q':
+            board[toRow][toCol][PIECE] = WHITE_QUEEN;
+            break;
+        case 'r':
+        case 'R':
+            board[toRow][toCol][PIECE] = WHITE_ROOK + toAdd;
+            break;
+        case 'n':
+        case 'N':
+            board[toRow][toCol][PIECE] = WHITE_KNIGHT + toAdd;
+            break;
+        case 'b':
+        case 'B':
+            board[toRow][toCol][PIECE] = WHITE_BISHOP + toAdd;
+            break;
+    }
+    clearLine(statusLine);
+    clearLine(commandLine);
 }

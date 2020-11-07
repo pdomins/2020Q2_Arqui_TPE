@@ -11,6 +11,9 @@ int moveRook(int fromRow,int fromCol,int toRow,int toCol);
 int moveBishop(int fromRow,int fromCol,int toRow,int toCol);
 int moveQueen(int fromRow,int fromCol,int toRow,int toCol);
 
+int shortCastling();
+int longCastling();
+
 int isValidCoord(int x, int y);
 int isWhitePiece(int pieceNumber);
 

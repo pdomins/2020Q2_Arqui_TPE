@@ -85,9 +85,14 @@ void greeting(){
     printFrom("Instructions:",heigth+=SCREEN_HEIGTH,0);
     printFrom("Press ENTER to begin your adventure",heigth+=SCREEN_HEIGTH,0);
     printFrom("Press \"q\" to quit without saving or \"p\" to pause your game",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Press \"r\" to flip the board 90 degrees.",heigth+=SCREEN_HEIGTH,0);
     printFrom("Insert your game plays in the following notation:",heigth+=SCREEN_HEIGTH,0);
     printFrom("First, put the coordinates of the piece you want to move, then to where you want to move it",heigth+=SCREEN_HEIGTH,0);
-    printFrom("For example, a1a3 moves the piece from the position a1 to a3",heigth+=SCREEN_HEIGTH,0);
+    printFrom("For example,a1a3 moves the piece from the position a1 to a3",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Insert 00 to generate a  short clastling",heigth+=SCREEN_HEIGTH,0);
+    printFrom("Insert 000 to generate a  long clastling",heigth+=SCREEN_HEIGTH,0);
+    printFrom("To execute a promotion, when the other side has been reached, a menu with options from which to choose will appear.",heigth+=SCREEN_HEIGTH,0);
+
     heigth+=SCREEN_HEIGTH;
     printFrom("Dont worry if you mistype or enter an invalid move! We will take care of that!",heigth+=SCREEN_HEIGTH,0);
     printFrom("Enjoy!",heigth+=SCREEN_HEIGTH,0);

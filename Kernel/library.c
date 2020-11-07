@@ -3,6 +3,7 @@
 #include <library.h>
 #include <registers.h>
 #include <naiveConsole.h>
+#include <font.h>
 
 #define BUFFER64_BITS 20
 
@@ -17,7 +18,15 @@ int printStringFrom(char* string, int length, int row, int col, int color){
         }
     } else {
         for (int i = 0; i < length; i++){
-            if(draw_char_from(string[i],row,col + i * 8,color)) {
+            if(draw_char_from(string[i],row,col,color)) {
+                col += CHAR_WIDTH;
+                if(col >= 1024) {
+                    row += CHAR_HEIGHT;
+                    col = 0;
+                }
+                if(row >= 768) {
+                    row = 0;
+                }
                 printedCharacters++;
             }       
         }
