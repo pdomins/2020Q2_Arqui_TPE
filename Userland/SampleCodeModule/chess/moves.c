@@ -3,14 +3,18 @@
 #include <maths.h>
 #include <string.h>
 #include <standardIO.h>
+#include <syscalls.h>
 
 #define WHITES_TURN 0
 #define BLACK_TURN 1
 
-#define statusLine 736
-#define commandLine 752
+#define DIM 8
+#define CHAR_HEIGHT 16
+#define CHAR_WIDTH 8
+#define statusLine (getHeight() - CHAR_HEIGHT * 2)
+#define commandLine (getHeight() - CHAR_HEIGHT)
 
-extern int board[8][8][3];
+extern int board[DIM][DIM][3];
 int isWhitePiece(int pieceNumber);
 int isValidCoord(int toRow, int toCol);
 int isAvailable(int toRow, int toCol);
@@ -101,13 +105,10 @@ int shortCastling(int turn) {
         if (board[7][4][PIECE] == WHITE_KING && board[7][7][PIECE] == WHITE_ROOK &&
             board[7][4][MOVEMENTS] == 0 && board[7][7][MOVEMENTS] == 0 && 
             board[7][6][PIECE] == 0 && board[7][5][PIECE] == 0 ) {
-                //Movemos el rey
                 board[7][6][PIECE] = WHITE_KING;
                 board[7][6][MOVEMENTS] = 1;
-                //Movemos la torre
                 board[7][5][PIECE] = WHITE_ROOK;
                 board[7][5][MOVEMENTS] = 1;
-                //Vaciamos las casillas donde estaban el rey y la torre
                 board[7][4][PIECE] = 0;
                 board[7][7][PIECE] = 0;
                 return 1;
@@ -122,7 +123,7 @@ int shortCastling(int turn) {
                 board[0][5][MOVEMENTS] = 1;
                 board[0][4][PIECE] = 0;
                 board[0][7][PIECE] = 0;
-            return 1;
+                return 1;
         }
     }
     return 0;
@@ -133,13 +134,10 @@ int longCastling(int turn) {
         if (board[7][4][PIECE] == WHITE_KING && board[7][0][PIECE] == WHITE_ROOK &&
             board[7][4][MOVEMENTS] == 0 && board[7][0][MOVEMENTS] == 0 && 
             board[7][1][PIECE] == 0 && board[7][2][PIECE] == 0  && board[7][3][PIECE]== 0) {
-                //Movemos el rey
                 board[7][2][PIECE] = WHITE_KING;
                 board[7][2][MOVEMENTS] = 1;
-                //Movemos la torre
                 board[7][3][PIECE] = WHITE_ROOK;
                 board[7][3][MOVEMENTS] = 1;
-                //Vaciamos las casillas donde estaban el rey y la torre
                 board[7][4][PIECE] = 0;
                 board[7][0][PIECE] = 0;
                 return 1;
@@ -154,7 +152,7 @@ int longCastling(int turn) {
                 board[0][3][MOVEMENTS] = 1;
                 board[0][4][PIECE] = 0;
                 board[0][0][PIECE] = 0;
-            return 1;
+                return 1;
         }
     }
     return 0;
@@ -224,7 +222,6 @@ Also, checks that if a piece is found, its a FOE's one.
 */
 int isValidRookPath(int fromRow, int fromCol,int toRow, int toCol){
     int i = fromRow, j = fromCol;
-    //Creo que el i y el j estan vinculados al reves con el fromRow y fromCol
     if (fromRow == toRow){ //Te moves horizontal
         if(fromCol < toCol){ //Te moves para la derecha
             while( ++j != toCol ){
@@ -291,7 +288,7 @@ int checkKnight(int fromRow,int fromCol,int toRow,int toCol){
     if(isValidCoord(toRow,toCol)){ //no chequeo que sea un path valido dado que el caballo puede saltar
         if(fromRow+2==toRow || fromRow - 2 ==toRow){
             return fromCol + 1 == toCol || fromCol - 1 == toCol;
-        }else if(fromCol + 2== toCol || fromCol - 2 == toCol){
+        }else if(fromCol + 2 == toCol || fromCol - 2 == toCol){
             return fromRow + 1  == toRow || fromRow -1 == toRow;
         }
     } 
@@ -317,8 +314,8 @@ Returns 1 if it's a valid move, 0 if not.
 */
 int checkRook(int fromRow,int fromCol,int toRow,int toCol){
     if (isValidCoord(toRow,toCol))
-        if((fromRow==toRow && fromCol != toCol) || (fromCol == toCol && fromRow != toRow) )
-            return isValidRookPath(fromRow,fromCol,toRow, toCol);
+        if((fromRow == toRow && fromCol != toCol) || (fromCol == toCol && fromRow != toRow) )
+            return isValidRookPath(fromRow, fromCol, toRow, toCol);
     return 0;
 }
 

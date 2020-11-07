@@ -9,8 +9,10 @@
 #define INSTRUCTION_LENGTH 4
 #define MAX_TIME 1090
 
-#define statusLine 736
-#define commandLine 752
+#define CHAR_HEIGHT 16
+#define CHAR_WIDTH 8
+#define statusLine (getHeight() - CHAR_HEIGHT * 2)
+#define commandLine (getHeight() - CHAR_HEIGHT)
 
 /*      B   N
     K = 1 / 7
@@ -44,9 +46,7 @@ int turns = 0;
 int exitSave = 0, exitWithoutSave = 0;
 int whiteTicks , blackTicks  = 0;
 int maxTimeReached = 0;
-//int statusLine = 736;
-//int commandLine = 752; //Son pixeles
-int col = 0;
+int colCursor = 0;
 char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
 int movesWhite = 0, movesBlack = 0;
 
@@ -86,10 +86,10 @@ void play(){
                     case '\b':
                         if (position > 0){
                             buffer[--position] = 0;
-                            if(col >= 0) {
-                                col -= 8;
+                            if(colCursor >= 0) {
+                                colCursor -= 8;
                             }
-                            putCharFrom(' ', commandLine, col);
+                            putCharFrom(' ', commandLine, colCursor);
                         }
                         break;
                     case 'p':
@@ -108,8 +108,8 @@ void play(){
                     default:
                         if (position<10 && IS_ALPHA(c)){
                         buffer[position++] = c;
-                        putCharFrom(c, commandLine, col);
-                        col += 8;
+                        putCharFrom(c, commandLine, colCursor);
+                        colCursor += 8;
                         }
                         break;
                 } 
@@ -124,14 +124,14 @@ void play(){
             if (exitWithoutSave){
                 break;
             }
-            if(col >= 1024) {
-                col = 0;
+            if(colCursor >= getWidth()) {
+                colCursor = 0;
                     
             }
             printTime(whiteTicks/18,blackTicks/18);
         }
         buffer[position] = 0;
-        col = 0;
+        colCursor = 0;
         clearLine(commandLine);
         int moved = 0;
         if(strcmp(buffer, "00") == 0){
@@ -152,11 +152,9 @@ void play(){
     }
 
     if (!exitSave && !exitWithoutSave && !maxTimeReached){
-        printFrom("ganaste logi apreta enter para volver a la yel MAESTRO",statusLine,0);
-        while ((getChar())!='\n');
+        printExitMessage(turns,0);
     }else if (maxTimeReached){
-        printFrom("inactivity. apreta enter para volver a yel",statusLine,0);
-        while ((getChar())!='\n');
+        printExitMessage(turns,1);
         clearLine(commandLine);
     }
 
@@ -281,7 +279,7 @@ void incrementTimer(){
 }
 
 void clearLine(int line) {
-    printFrom("                                                                                                ", line, col);
+    printFrom("                                                                                                ", line, 0);
 }
 
 int getWhiteTime(){

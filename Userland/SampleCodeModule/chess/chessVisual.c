@@ -1,5 +1,6 @@
 #include <chessVisual.h>
 #include <chess.h>
+#include <chessFont.h>
 #include <standardIO.h>
 #include <syscalls.h>
 #include <maths.h>
@@ -8,12 +9,21 @@
 #define DIM 8
 #define CHAR_HEIGHT 16
 #define CHAR_WIDTH 8
+#define statusLine (getHeight() - CHAR_HEIGHT * 2)
+#define commandLine (getHeight() - CHAR_HEIGHT)
+#define LOG_MAX_HEIGHT (getHeight() - CHAR_HEIGHT * 2)
 
-#define statusLine 736
-#define commandLine 752
-
-extern int board[8][8][3];
-int rotation = 0;
+extern int board[DIM][DIM][3];
+extern int turns;
+int rotation = 0; //0 if 0°, 1 if 90°, 2 if 180°, 3 if 270°
+int arrow[9*9];
+int deletion[9*9];
+int logCursor;
+int initLogRow;
+extern int movesWhite;
+extern int movesBlack;
+extern char whiteMoves[50][5];
+extern char blackMoves[50][5];
 
 void printBoard(){
     int original_s = 16; //Size de la font
@@ -21,135 +31,10 @@ void printBoard(){
     int initial_x = 32; //Posicion inicial del tablero
     int initial_y = 32; //Posicion inicial del tablero
 
-    char * pawn  = {
-             "________________"
-             "________________"
-             "________________"
-             "________________"
-             "________________"
-             "________________"
-             "_______XX_______"
-             "______XXXX______"
-             "_____XXXXXX_____"
-             "______XXXX______"
-             "_____XXXXXX_____"
-             "______XXXX______"
-             "______XXXX______"
-             "_____XXXXXX_____"
-             "____XXXXXXXX____"
-             "________________"
-    };
-
-    char * tower = {
-            "________________"
-            "________________"
-            "__XXX_XXXX_XXX__"
-            "__XXX_XXXX_XXX__"
-            "__XXX_XXXX_XXX__"
-            "__XXXXXXXXXXXX__"
-            "___XXXXXXXXXX___"
-            "____XXXXXXXX____"
-            "____XXXXXXXX____"
-            "____XXXXXXXX____"
-            "____XXXXXXXX____"
-            "____XXXXXXXX____"
-            "___XXXXXXXXXX___"
-            "__XXXXXXXXXXXX__"
-            "_XXXXXXXXXXXXXX_"
-            "________________"
-    };
-
-    char * bishop = {
-            "________________"
-            "________________"
-            "________X_______"
-            "______XXXX______"
-            "_____X_XXXX_____"
-            "____XXX_XXXX____"
-            "_____XXX_XX_____"
-            "_______XX_______"
-            "_______XX_______"
-            "______XXXX______"
-            "______XXXX______"
-            "_____XXXXXX_____"
-            "_____XXXXXX_____"
-            "_____XXXXXX_____"
-            "____XXXXXXXX____"
-            "________________"
-    };
-
-    char * knight = {
-            "________________"
-            "________________"
-            "____XX__XXX_____"
-            "__XXXXXXXXXXX___"
-            "_XXXXXXXXX_XXX__"
-            "_XXXXXX_XXXXXXX_"
-            "_XXXXXX___XXXXX_"
-            "_XXXXXXXX___XXX_"
-            "__XXXXXXXXX_____"
-            "___XXXXXXXXX____"
-            "___XXXXXXXXXX___"
-            "__XXXXXXXXXXXX__"
-            "__XXXXXXXXXXXX__"
-            "__XXXXXXXXXXXX__"
-            "_XXXXXXXXXXXXXX_"
-            "________________"
-    };
-
-    char * queen = {
-            "________________"
-            "______XXXX______"
-            "_____XXXXXX_____"
-            "____XXXXXXXX____"
-            "_____XXXXXX_____"
-            "______XXXX______"
-            "_____XXXXXX_____"
-            "_______XX_______"
-            "_______XX_______"
-            "_______XX_______"
-            "_______XX_______"
-            "______XXXX______"
-            "______XXXX______"
-            "____XXXXXXXX____"
-            "___XXXXXXXXXX___"
-            "________________"
-    };
-
-    char * king = {
-            "________________"
-            "_______XX_______"
-            "_____XXXXXX_____"
-            "_______XX_______"
-            "____XXXXXXXX____"
-            "_____X_XX_X_____"
-            "______XXXX______"
-            "_______XX_______"
-            "______XXXX______"
-            "______XXXX______"
-            "______XXXX______"
-            "______XXXX______"
-            "____XXXXXXXX____"
-            "___XXXXXXXXXX___"
-            "___XXXXXXXXXX___"
-            "________________"
-    };
-
-    char * baseBoard = {
-            "X_X_X_X_"
-            "_X_X_X_X"
-            "X_X_X_X_"
-            "_X_X_X_X"
-            "X_X_X_X_"
-            "_X_X_X_X"
-            "X_X_X_X_"
-            "_X_X_X_X"
-    };
-
     /**
      * Impresion de las letra y numeros
      */
-    int row = initial_y + scaled_s / 2 - CHAR_HEIGHT; //8 es el char_width;
+    int row = initial_y + scaled_s / 2 - CHAR_HEIGHT;
     int col = initial_x + scaled_s / 2 - CHAR_WIDTH;
     int rightCol = initial_x + scaled_s * DIM + 8;
     int leftCol = initial_x / 2;
@@ -279,6 +164,12 @@ void printBoard(){
             }
         }
     }
+    if (turns %2 == 0){
+        printcFrom("It's player 1 turn",statusLine, 0, color_log);
+    }else printcFrom("It's player 2 turn",statusLine, 0, color_log);
+    
+            
+
 }
 
 void printTime(int secondsWhite, int secondsBlack){
@@ -287,8 +178,6 @@ void printTime(int secondsWhite, int secondsBlack){
     secondsWhite %= 60;
     int minBlack = secondsBlack/ 60;
     secondsBlack %= 60;
-    int color_time = 0xffc32b;
-    int color_diff = 0x38ad34;
     int cursor = 40;
     char aux[22] = {0};
     for(int i = 0; i < 22 - 1 ; i++){
@@ -297,116 +186,88 @@ void printTime(int secondsWhite, int secondsBlack){
     aux[5] = ':'; aux[18] = ':';
     itoa(minWhite, aux + 3, 2);
     itoa(secondsWhite, aux + 6, 2);
-    itoa(minBlack, aux + 16, 2);
+    itoa(minBlack, aux + CHAR_HEIGHT, 2);
     itoa(secondsBlack, aux + 19, 2);   
-    printcFrom(aux, cursor, 740, color_time);
-    /*printcFrom(aux, cursor, 764, color_time);
-    printcFrom(":", cursor, 780, color_time);
-    printcFrom(aux,cursor,788,color_time);
-    
-    printcFrom("        ", cursor, 804, color_time);
-    printcFrom(aux, cursor, 764, color_time);
-
-    printcFrom(aux,cursor,892,color_time);*/
+    printcFrom(aux, cursor, LOG_MAX_HEIGHT, color_time);
     cursor += CHAR_HEIGHT;
-    char difference[16] = {0};
-    for(int i = 0; i < 16 - 1; i++) {
+    char difference[CHAR_HEIGHT] = {0};
+    for(int i = 0; i < CHAR_HEIGHT - 1; i++) {
         difference[i] = ' ';
     }
     difference[9]='+';
     difference[12]=':';
     itoa(timeDiff / 60, difference + 10, 2);
     itoa(timeDiff % 60, difference + 13, 2);
-    printcFrom(difference,cursor,740,color_diff);
+    printcFrom(difference, cursor, LOG_MAX_HEIGHT, color_diff);
 }
-extern char whiteMoves[50][5];
-extern char blackMoves[50][5];
-int color_log = 0xadadad;
-     char * arrowFont = {
-            /*"_________"
-            "_________"
-            "____X____"
-            "___XXX___"
-            "__XXXXX__"
-            "_XXXXXXX_"
-            "XXXXXXXXX"
-            "_________"
-            "_________"*/
-            "______X__"
-            "_____XX__"
-            "____XXX__"
-            "___XXXX__"
-            "__XXXXX__"
-            "___XXXX__"
-            "____XXX__"
-            "_____XX__"
-            "______X__"
-    };
 
-    int arrow[9*9];
-
-    char * delete = {
-            "_________"
-            "_________"
-            "_________"
-            "_________"
-            "_________"
-            "_________"
-            "_________"
-            "_________"
-            "_________"
-    };
-
-    int deletion[9*9];
-
-int logCursor;
-int init_log_row;
-extern int movesWhite;
-extern int movesBlack;
+void checkBoundLog(){
+    if (logCursor >= LOG_MAX_HEIGHT) {
+        logCursor = 56;
+    } 
+}
 
 void printLog(){
     logCursor = 24;
-    int color_log = 0xadadad;
-    init_log_row = 80;
+    initLogRow = 80;
         
-
-    printcFrom("Player 1        Player 2", (logCursor%704), 740, color_log); 
-    logCursor += (CHAR_HEIGHT * 3);
-    logCursor += 16;
+    printcFrom("q :quit    p :pause", statusLine - CHAR_HEIGHT, getWidth()-20*CHAR_WIDTH, color_log);
+    printcFrom("Player 1        Player 2", logCursor, LOG_MAX_HEIGHT, color_log); 
+    logCursor += (CHAR_HEIGHT * 4);
 
     for (int i = 0, log = logCursor; i < movesWhite; i++)
     {
-        printcFrom(whiteMoves[i],(log%704), 740+4*8, color_log);
-        log+=16; init_log_row+=16;
+        printcFrom(whiteMoves[i],(log%LOG_MAX_HEIGHT), LOG_MAX_HEIGHT+4*8, color_log);
+        log+=CHAR_HEIGHT; 
+        initLogRow+=CHAR_HEIGHT;
+        if (log>=LOG_MAX_HEIGHT) 
+            logCursor = 56;
     }
     for (int i = 0; i < movesBlack; i++)
     {
-        printcFrom(blackMoves[i],(logCursor%704), 740+16*8, color_log);
-        logCursor+=16; 
+        printcFrom(blackMoves[i],logCursor, LOG_MAX_HEIGHT+CHAR_HEIGHT*8, color_log);
+        logCursor+=CHAR_HEIGHT; 
+        checkBoundLog();
 
     }
 
     scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
-    draw(arrow, init_log_row, 956, 9, 9);    
+    draw(arrow, initLogRow, 956, 9, 9);    
 }
 
 void updateLog(char *buffer,int turn){
     if(turn%2==0){
-        printcFrom(buffer, (logCursor%704), 740+4*8, color_log);
-        printcFrom("It's player 2 turn",statusLine, 0, color_log);
-        scaleMatrix(delete, deletion, 9, 9, -1, 0x0);
+        printcFrom(buffer, logCursor, LOG_MAX_HEIGHT+4*8, color_log);
+        scaleMatrix(blank, deletion, 9, 9, -1, 0x0);
         scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
-        draw(deletion, init_log_row, 956, 9, 9);
-        draw(arrow, init_log_row+=16, 956, 9, 9);
+        draw(deletion, initLogRow, 956, 9, 9);
+        draw(arrow, initLogRow+=CHAR_HEIGHT, 956, 9, 9);
 
     }else{
-        printcFrom(buffer,(logCursor%704), 740+16*8, color_log); logCursor+=16;
-        printcFrom("It's player 1 turn", statusLine, 0, 0xFFFFFF);
+        printcFrom(buffer,logCursor, LOG_MAX_HEIGHT + CHAR_HEIGHT * 8, color_log); logCursor+=CHAR_HEIGHT;
+        checkBoundLog();
     }
+    
 }
-
 
 void rotate() {
     rotation++;
     rotation %= 4;
+}
+
+void printExitMessage(int turn, int exitType){ //0 if a king is dead 1 if time runs out
+    switch (exitType){
+    case 0: //the king is captured so the current turn is the losers one
+        if (turn%2 == 0)
+        printFrom("Player 1 your king has been captured- Player 2 wins! Press \"ENTER\" to return to shell.",statusLine,0);
+        else printFrom("Player 2 your king has been captured- Player 1 wins! Press \"ENTER\" to return to shell.",statusLine,0);
+        break;
+    case 1: //due to inactivy. the current turn is the losers one
+        if (turn%2 == 0)
+        printFrom("Player 1 you have run out of time- Player 2 wins! Press \"ENTER\" to return to shell.",statusLine,0);
+        else printFrom("Player 2 you have run out of time- Player 1 wins! Press \"ENTER\" to return to shell.",statusLine,0);
+    default:
+        break;
+    }
+    while ((getChar())!='\n');
 }

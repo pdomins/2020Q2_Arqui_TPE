@@ -3,13 +3,17 @@
 
 static unsigned long ticks = 0;
 
-void (*function) (void);
-int enabled = 0;
+typedef struct function{
+	void (*f) (void);
+	int enabled;
+}function;
+
+function alarm = {0,0};
 
 void timer_handler() {
 	ticks++;
-	if(enabled){
-		function();
+	if(alarm.enabled){
+		alarm.f();
 	}
 }
 
@@ -22,6 +26,10 @@ int seconds_elapsed() {
 }
 
 void addFunc(void (*func) (void), int flag){
+	alarm.f = func;
+	alarm.enabled = flag;
+	/*
 	function = func;
 	enabled = flag;
+	*/
 }

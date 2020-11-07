@@ -67,6 +67,20 @@ void clearLine(int yPos);
 void insertEnter();
 void backspace();
 
+void drawPixel(int row, int col, int color){
+    char* current_position = (char*)(uint64_t)screen_data->framebuffer + 3 * (row * screen_data->width + col);
+
+    int blue = color & 0xFF;
+    int green = (color >> 8) & 0xFF;
+    int red = (color >> 16) & 0xFF;
+
+    *current_position = blue;
+    current_position++;
+    *current_position = green;
+    current_position++;
+    *current_position = red;
+}
+
 int draw_char_from(int character, int row, int col, int color){
     switch(character) {
         case '\n': insertEnter();
@@ -106,31 +120,6 @@ int draw_char(int character, int color){
     return ret;
 }
 
-void checkPosition() {
-    if(xPos >= screen_data->width) {
-        xPos = 0;
-        yPos += CHAR_HEIGHT;
-    }
-    if(yPos >= screen_data->height) {
-        yPos = screen_data->height - CHAR_HEIGHT;
-        shift();
-    }
-}
-
-void drawPixel(int row, int col, int color){
-    char* current_position = (char*)(uint64_t)screen_data->framebuffer + 3 * (row * screen_data->width + col);
-
-    int blue = color & 0xFF;
-    int green = (color >> 8) & 0xFF;
-    int red = (color >> 16) & 0xFF;
-
-    *current_position = blue;
-    current_position++;
-    *current_position = green;
-    current_position++;
-    *current_position = red;
-}
-
 int drawMatrix(int * matrix, int row, int col, int rows, int columns) {
     if(row < 0 || col < 0 || row + rows > screen_data->height || col + columns > screen_data->width) {
         //Mostrar mensaje de error o algo parecido. Si la posición es invalida o se pasa de la pantalla.
@@ -154,19 +143,38 @@ int drawMatrix(int * matrix, int row, int col, int rows, int columns) {
     return 0; //Se debería retorna la cantidad de pixeles impresos o algo asi
 }
 
-void shift() {
-    int length = (screen_data->width * screen_data->height * 3) - ((3 * screen_data->width)*16);
-    memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + (3 * screen_data->width) * CHAR_HEIGHT), length);
-
-    clearLine(yPos);
-}
-
 void clearScreen() {
     for(int i = 0; i < screen_data->height; i++) {
         for(int j = 0; j < screen_data->width; j++) {
             drawPixel(i, j, BACKGROUND_COLOUR);
         }
     }
+}
+
+int screenHeight() {
+    return screen_data->height;
+}
+
+int screenWidth() {
+    return screen_data->width;
+}
+
+void checkPosition() {
+    if(xPos >= screen_data->width) {
+        xPos = 0;
+        yPos += CHAR_HEIGHT;
+    }
+    if(yPos >= screen_data->height) {
+        yPos = screen_data->height - CHAR_HEIGHT;
+        shift();
+    }
+}
+
+void shift() {
+    int length = (screen_data->width * screen_data->height * 3) - ((3 * screen_data->width)*16);
+    memcpy((void *)(uint64_t)(screen_data->framebuffer), (void *)(uint64_t)(screen_data->framebuffer + (3 * screen_data->width) * CHAR_HEIGHT), length);
+
+    clearLine(yPos);
 }
 
 void clearLine(int yPos) {

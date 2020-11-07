@@ -6,16 +6,16 @@
 #include <time.h>
 
 
-#define TIME_SYSCALL 10
 #define READ_SYSCALL 0
 #define WRITE_SYSCALL 1
 #define DRAW_SYSCALL 2
+#define CLEAR_SYSCALL 3
 #define INFO_REG 8
 #define MEM_DUMP 9
-#define CLEAR_SYSCALL 3
+#define TIME_SYSCALL 10
 #define SET_ALARM 11
-
-
+#define SCREEN_HEIGHT 12
+#define SCREEN_WIDTH 13
 
 #define MEM_BYTES 32
 
@@ -26,6 +26,8 @@ void getTime(date myDate);
 void memDumpHandler(char * dir, char * dump);
 void infoRegHandler(uint64_t firstP[]);
 void clearScreenHandler();
+int screenHeightHandler();
+int screenWidthHandler();
 
 
 int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP,uint64_t fifthP) {
@@ -51,6 +53,10 @@ int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t
 		case SET_ALARM:
 			addFunc((void *)firstP, secondP);
 			return 0;
+		case SCREEN_HEIGHT:
+			return screenHeightHandler();
+		case SCREEN_WIDTH: 
+			return screenWidthHandler();
 		default:
 			return -1;
 	}
@@ -85,4 +91,11 @@ void infoRegHandler(uint64_t firstP[]){
 
 void clearScreenHandler(){
 	clearScreen();
+}
+
+int screenHeightHandler() {
+	return screenHeight();
+}
+int screenWidthHandler() {
+	return screenWidth();
 }
