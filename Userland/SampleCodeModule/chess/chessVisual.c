@@ -361,7 +361,8 @@ int color_log = 0xadadad;
 
 int logCursor;
 int init_log_row;
-extern int turns;
+extern int movesWhite;
+extern int movesBlack;
 
 void printLog(){
     logCursor = 24;
@@ -373,26 +374,23 @@ void printLog(){
     logCursor += (CHAR_HEIGHT * 3);
     logCursor += 16;
 
-    for(int i = 0 ; i < (turns/2) +1; i++){
-        if(whiteMoves[i]!=0){
-        printcFrom(whiteMoves[i],(logCursor%704), 740+4*8, color_log);
-        scaleMatrix(delete, deletion, 9, 9, -1, 0x0);
-        scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
-        draw(deletion, init_log_row, 956, 9, 9);
-        draw(arrow, init_log_row+=16, 956, 9, 9);
-        }
-        if(blackMoves[i]!=0){
-            printcFrom(blackMoves[i],(logCursor%704), 740+16*8, color_log);
-            logCursor += 16;
-        }
+    for (int i = 0, log = logCursor; i < movesWhite; i++)
+    {
+        printcFrom(whiteMoves[i],(log%704), 740+4*8, color_log);
+        log+=16; init_log_row+=16;
     }
-    
-    
+    for (int i = 0; i < movesBlack; i++)
+    {
+        printcFrom(blackMoves[i],(logCursor%704), 740+16*8, color_log);
+        logCursor+=16; 
+
+    }
+
+    scaleMatrix(arrowFont, arrow, 9, 9, color_log, -1);
+    draw(arrow, init_log_row, 956, 9, 9);    
 }
 
 void updateLog(char *buffer,int turn){
-    
-
     if(turn%2==0){
         printcFrom(buffer, (logCursor%704), 740+4*8, color_log);
         printcFrom("It's player 2 turn",statusLine, 0, color_log);

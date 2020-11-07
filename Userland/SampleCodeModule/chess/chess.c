@@ -48,6 +48,7 @@ int maxTimeReached = 0;
 //int commandLine = 752; //Son pixeles
 int col = 0;
 char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
+int movesWhite = 0, movesBlack = 0;
 
 void runChess(int entry){
     clearScreen();
@@ -66,6 +67,8 @@ void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
     exitSave = 0;
     whiteTicks = 0;
     blackTicks  = 0;
+    movesWhite= 0;
+    movesBlack= 0;
     maxTimeReached = 0;
     fillBoard();
     //poner todo lo global en 0
@@ -164,10 +167,10 @@ void play(){
 void logsHandler(char * buffer){
     switch (turns%2){
         case 0:
-            strcpy(whiteMoves[(int)turns/2],buffer);
+            strcpy(whiteMoves[movesWhite++],buffer);
             break;
         case 1:
-            strcpy(blackMoves[(int)turns/2],buffer);
+            strcpy(blackMoves[movesBlack++],buffer);
             break;
     }
     updateLog(buffer,turns);
