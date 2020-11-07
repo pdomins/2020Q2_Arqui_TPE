@@ -49,7 +49,7 @@ int maxTimeReached = 0;
 int colCursor = 0;
 char whiteMoves[50][5]={{0}}, blackMoves[50][5]={{0}};
 int movesWhite = 0, movesBlack = 0;
-
+int passant = 0;
 void runChess(int entry){
     clearScreen();
     if (entry == 0 || exitWithoutSave ) newGame(); //initializes or clears board
@@ -72,6 +72,9 @@ void newGame(){ //pone todo lo global en 0 y llena el tablero de nuevo
     maxTimeReached = 0;
     fillBoard();
     //poner todo lo global en 0
+}
+void updateTime(){
+    printTime(whiteTicks/18,blackTicks/18);
 }
 
 void play(){
@@ -128,7 +131,7 @@ void play(){
                 colCursor = 0;
                     
             }
-            printTime(whiteTicks/18,blackTicks/18);
+            updateTime();
         }
         buffer[position] = 0;
         colCursor = 0;
@@ -147,6 +150,11 @@ void play(){
         if(moved) {
             logsHandler(buffer);
             turns++; //si es un movimiento valido, cambio de turno
+            if(passant==1){
+                logsHandler("e.p ");
+                turns++;
+                passant=0;
+            }
             printBoard();
         }
     }
@@ -173,7 +181,9 @@ void logsHandler(char * buffer){
     }
     updateLog(buffer,turns);
 }
-
+void passantTurn(){
+    passant = 1;
+}
 int hasPrevGame(){
     return exitSave;
 }

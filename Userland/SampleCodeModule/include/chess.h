@@ -24,5 +24,7 @@ int isWhitesTurn();
 void clearLine(int line);
 int getWhiteTime();
 int getBlackTime();
+void passantTurn();
+void updateTime();
 
 #endif

@@ -1,4 +1,5 @@
 #include <chess.h>
+#include <chessVisual.h>
 #include <moves.h>
 #include <maths.h>
 #include <string.h>
@@ -28,6 +29,13 @@ int checkQueen(int fromRow,int fromCol,int toRow,int toCol);
 void checkIfKing(int piece);
 int checkPromotion(int fromRow,int fromCol,int toRow,int toCol);
 void promote(int toRow,int toCol);
+void checkPassant(int fromRow, int fromCol, int toRow, int toCol);
+
+extern char whiteMoves[50][5];
+extern char blackMoves[50][5];
+extern int movesWhite;
+extern int movesBlack;
+extern int turns;
 
 /*      B   N
     K = 1 / 7
@@ -54,18 +62,105 @@ int sameTeam(int fromRow,int fromCol,int toRow,int toCol){
     
 }
 
-int move(int (*func) (int,int,int,int),int fromRow,int fromCol,int toRow,int toCol){
-    if (func(fromRow,fromCol,toRow,toCol)){
+int validPassant(char option, int left, int right) {
+    char buffer[2] = {0};
+    buffer[0] = option;
+    toMayus(buffer);
+    option = buffer[0];
+    return (option == 'R' && right) || (option == 'L' && left) || (option == 'S');
+}
+
+void checkPassant(int fromRow, int fromCol, int toRow, int toCol){
+    printBoard();
+    int rightPawn = 0;
+    int leftPawn = 0;
+    if(abs(fromRow - toRow) == 2 ) {
+        if(board[toRow][toCol][PIECE] == WHITE_PAWN) {
+            if(toCol > 0 && board[toRow][toCol - 1][PIECE] == BLACK_PAWN) { //Pregunto si hay un peon negro a la izquierda
+                rightPawn = 1;
+            }
+            if(toCol < 7 && board[toRow][toCol + 1][PIECE] == BLACK_PAWN) { //Pregunto si hay un peon negro a la derecha
+                leftPawn = 1;
+            }
+        }else if(board[toRow][toCol][PIECE] == BLACK_PAWN) {
+            if(toCol > 0 && board[toRow][toCol - 1][PIECE] == WHITE_PAWN) { //Pregunto si hay un peon negro a la izquierda
+                rightPawn = 1;
+            }
+            if(toCol < 7 && board[toRow][toCol + 1][PIECE] == WHITE_PAWN) { //Pregunto si hay un peon negro a la derecha
+                leftPawn = 1;
+            }
+        }
+    }
+    if(rightPawn || leftPawn) {
+        char c;
+        printcFrom("Passant: 'R': Right 'L':Left 'S':Skip", statusLine, 0,  0xfcba03);
+        while(!validPassant((c = getChar()), leftPawn, rightPawn)){
+            updateTime();
+        }
+        switch(c) {
+                case 'r':
+                case 'R':
+                    if(toRow == 3) { //la blanca se come la negra //ESta bien
+                        board[toRow-1][toCol][PIECE] = board[toRow][toCol-1][PIECE];
+                        board[toRow-1][toCol][MOVEMENTS] = board[toRow][toCol-1][MOVEMENTS];
+                        board[toRow][toCol-1][PIECE] = 0;
+                        board[toRow][toCol-1][MOVEMENTS] = 0;
+                        board[toRow][toCol][PIECE] = 0;
+                        board[toRow][toCol][MOVEMENTS] = board[toRow][toCol-1][PIECE];                        
+                    } else if(toRow == 4) { //el negro se come a la blanca NEGRO BLANCA
+                        board[toRow+1][toCol][PIECE] = board[toRow][toCol - 1][PIECE];
+                        board[toRow+1][toCol][MOVEMENTS] = board[toRow][toCol - 1][MOVEMENTS];
+                        board[toRow][toCol-1][PIECE] = 0;
+                        board[toRow][toCol-1][MOVEMENTS] = 0;
+                        board[toRow][toCol][PIECE] = 0;
+                        board[toRow][toCol][MOVEMENTS] = 0;
+                    }
+                    passantTurn();
+                    break;
+                case 'l':
+                case 'L':                 
+                    if(toRow == 3) { //la blanca se come la negra NEGRO BLANCO
+                        board[toRow-1][toCol][PIECE] = board[toRow][toCol+1][PIECE];
+                        board[toRow-1][toCol][MOVEMENTS] = board[toRow][toCol+1][MOVEMENTS];
+                        board[toRow][toCol+1][PIECE] = 0;
+                        board[toRow][toCol+1][MOVEMENTS] = 0;
+                        board[toRow][toCol][PIECE] = 0;
+                        board[toRow][toCol][MOVEMENTS] = 0;
+
+                    } else if(toRow == 4) { //el negro se come a la blanca  BLANCO NEGRO
+                        board[toRow+1][toCol][PIECE] = board[toRow][toCol+1][PIECE];
+                        board[toRow+1][toCol][MOVEMENTS] = board[toRow][toCol+1][MOVEMENTS];
+                        board[toRow][toCol + 1][PIECE] = 0;
+                        board[toRow][toCol + 1][MOVEMENTS] = 0;
+                        board[toRow][toCol][PIECE] = 0;
+                        board[toRow][toCol][MOVEMENTS] = 0;
+
+                    }
+                    passantTurn();
+                    break;
+                case 's':
+                case 'S':
+                    break;
+            }    
+            printBoard();
+        clearLine(statusLine);
+        clearLine(commandLine);
+    }  
+}
+
+int move(int (*check) (int,int,int,int),int fromRow,int fromCol,int toRow,int toCol){
+    if (check(fromRow,fromCol,toRow,toCol)){
         checkIfKing(board[toRow][toCol][PIECE]); //checks if the piece to be eaten is a king
         if (sameTeam(fromRow,fromCol,toRow,toCol))
             return 0;
         board[toRow][toCol][PIECE] = board[fromRow][fromCol][PIECE];
-        
         if(checkPromotion(fromRow, fromCol, toRow, toCol)) {
             promote(toRow, toCol);
         }
-        setToMovedPiece(toRow, toCol);
         board[fromRow][fromCol][PIECE] = 0;
+        checkPassant(fromRow, fromCol, toRow, toCol);  
+          
+        setToMovedPiece(toRow, toCol);
         return 1;
     }
     return 0;
@@ -259,6 +354,7 @@ Returns 1 if the piece has not been moved yet.
 int isFirstMove(int fromRow, int fromCol){
     return board[fromRow][fromCol][MOVEMENTS] == 0;
 }
+
 
 /*
 Returns 1 if it's a valid move, 0 if not.
