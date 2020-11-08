@@ -15,10 +15,8 @@ int hasProgram(char *input);
 
 int tokenizeArguments(char *toToken, char tokens[10][25]);
 
-char *initGreet = "wooper@TPArqui:~$ ";
+char *initGreet = "user@TPArqui:~$ ";
 
-
-// wooper! wooper :(
 void initShell() {
     char c;
     while (1) {
@@ -44,7 +42,7 @@ void initShell() {
         if (contentLength > 0) {
             println("");
             char tokens[10][25] = {{0}}; //time param1
-            int args = tokenizeArguments(content, tokens) - 1;//pues el 1 es el nombre del programa
+            int args = tokenizeArguments(content, tokens) - 1;// 1 es el nombre del programa
             int progAvail = hasProgram(tokens[0]);
             if (progAvail != -1) {
                 commands[progAvail].f(args, tokens);

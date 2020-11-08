@@ -4,10 +4,6 @@ int abs(int value) {
     return value >= 0 ? value : -value;
 }
 
-int floor(double number) {
-    return number >= 0 ? (int) number : (int) number - 1;
-}
-
 void scaleMatrix(char *original, int *matrix, int original_s, int scaled_s, int color, int back) {
     int scaled_factor = scaled_s / original_s;
     for (int i = 0; i < original_s; i++) {

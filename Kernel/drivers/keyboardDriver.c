@@ -19,8 +19,6 @@
 #define RELEASED_KEY 0x80
 #define MAX_PRESSED_KEY 0X7F
 
-#define SPECIAL_KEY (ESC||BACKSPACE||TAB||ENTER||L_CTRL||L_SHIFT||R_SHIFT||L_ALT||CAPS_LOCK)
-
 #define IS_ALPHA(c) c >= 'a' && c <= 'z'
 
 #define BUFFER_SIZE 10
@@ -101,7 +99,7 @@ void preserveRegisters();
 void takeSnapshot(uint64_t *rsp);
 
 int isSpecialKey(int scanCode) {
-    return scanCode == ESC || /*scanCode == BACKSPACE ||scanCode == ENTER ||*/ scanCode == L_CTRL ||
+    return scanCode == ESC || scanCode == L_CTRL ||
            scanCode == L_SHIFT || scanCode == R_SHIFT || scanCode == L_ALT || scanCode == CAPS_LOCK;
 }
 
@@ -150,7 +148,7 @@ void keyboard_management(uint64_t *rsp) {
 int leer = 0;
 
 int readBuffer(int length, char *toWrite) {
-    for (int i = 0; i < length/* || enter */ ; i++) {
+    for (int i = 0; i < length; i++) {
         if (buffer[leer] == 0) {
             return i;
         }

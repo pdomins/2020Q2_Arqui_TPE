@@ -1,7 +1,5 @@
 #include <naiveConsole.h>
 
-//static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
-
 static char buffer[64] = {'0'};
 static uint8_t *const video = (uint8_t *) 0xB8000;
 static uint8_t *currentVideo = (uint8_t *) 0xB8000;

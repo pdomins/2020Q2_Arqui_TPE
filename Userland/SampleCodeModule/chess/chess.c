@@ -106,7 +106,6 @@ void newGame() { //pone lo global en 0 y llena el tablero de nuevo
     movesBlack = 0;
     maxTimeReached = 0;
     fillBoard();
-    //poner todo lo global en 0
 }
 
 void play() {
@@ -228,8 +227,6 @@ void fillBoard() {
         board[1][i][PIECE] = BLACK_PAWN;
         board[6][i][PIECE] = WHITE_PAWN;
     }
-    //board[1][6][PIECE] = WHITE_PAWN;
-    //board[6][7][PIECE] = BLACK_PAWN;
 
     board[0][0][PIECE] = BLACK_ROOK;
     board[0][1][PIECE] = BLACK_KNIGHT;

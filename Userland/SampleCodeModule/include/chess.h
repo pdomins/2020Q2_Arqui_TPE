@@ -8,9 +8,9 @@
 #define TOTAL_PIECES 16
 #define KING 'K'
 #define QUEEN 'Q'
-#define ROOK 'R' //torres
-#define BISHOP 'B' //aka bicho
-#define KNIGHT 'N' // N of kNight cause K was alreardy TAKEN BY SOMEONE ...
+#define ROOK 'R'
+#define BISHOP 'B'
+#define KNIGHT 'N'
 #define PAWN 'P'
 #define BOARD_SIZE 8
 

@@ -90,7 +90,7 @@ void getTime(date myDate) {
 
 void memDumpHandler(char *dir, char *dump) {
     for (int i = 0;
-         i < MEM_BYTES; i++) { //Cambiar el cuatro por defines, seria algo asi como MEM_BYTES / sizeof(uint64_t)
+         i < MEM_BYTES; i++ ) {
         dump[i] = dir[i];
     }
 }

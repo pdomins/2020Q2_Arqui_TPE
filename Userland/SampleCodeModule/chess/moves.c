@@ -31,8 +31,6 @@ int move(int (*check)(int, int, int, int), int fromRow, int fromCol, int toRow, 
 
 int isAvailable(int toRow, int toCol);
 
-//int isValidPath(int fromRow, int fromCol, int toRow, int toCol);
-
 int checkPawn(int fromRow, int fromCol, int toRow, int toCol);
 
 int checkKnight(int fromRow, int fromCol, int toRow, int toCol);
@@ -471,7 +469,7 @@ int validPromotion(char option) {
     buffer[0] = option;
     toMayus(buffer);
     option = buffer[0];
-    return option == 'Q' || option == 'R' || option == 'N' || option == 'B';
+    return option == QUEEN || option == ROOK || option == KNIGHT || option == BISHOP;
 }
 
 void promote(int toRow, int toCol) {
@@ -517,11 +515,11 @@ void checkPassant(int fromRow, int fromCol, int toRow, int toCol) {
             }
         } else if (board[toRow][toCol][PIECE] == BLACK_PAWN) {
             if (toCol > 0 &&
-                board[toRow][toCol - 1][PIECE] == WHITE_PAWN) { //Pregunto si hay un peon negro a la izquierda
+                board[toRow][toCol - 1][PIECE] == WHITE_PAWN) { //Pregunto si hay un peon blanco a la izquierda
                 rightPawn = 1;
             }
             if (toCol < 7 &&
-                board[toRow][toCol + 1][PIECE] == WHITE_PAWN) { //Pregunto si hay un peon negro a la derecha
+                board[toRow][toCol + 1][PIECE] == WHITE_PAWN) { //Pregunto si hay un peon blanco a la derecha
                 leftPawn = 1;
             }
         }
@@ -535,7 +533,7 @@ void checkPassant(int fromRow, int fromCol, int toRow, int toCol) {
         switch (c) {
             case 'r':
             case 'R':
-                if (toRow == 3) { //la blanca se come la negra //ESta bien
+                if (toRow == 3) { //la blanca se come la negra
                     board[toRow - 1][toCol][PIECE] = board[toRow][toCol - 1][PIECE];
                     board[toRow - 1][toCol][MOVEMENTS] = board[toRow][toCol - 1][MOVEMENTS];
                     board[toRow][toCol - 1][PIECE] = 0;

@@ -95,9 +95,6 @@ void showApps(int args, char argv[][25]) {
         printc(": ", color);
         printcln(commands[i].description, 0xcfd7e6);
     }
-    // char toHex[BUFFER64_BITS];
-    // turnToBaseN(array,16,toHex, BUFFER64_BITS);
-    // println(toHex);
 }
 
 void chess(int args, char argv[][25]) {
@@ -128,5 +125,5 @@ int checkArgs(int args, int expected) {
         println("Invalid number of arguments");
         return 0;
     }
-    return 1; //1 es que esta OK
+    return 1;
 }
