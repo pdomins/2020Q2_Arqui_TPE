@@ -84,38 +84,36 @@ void play(){
         char c;
         int position = 0;
         while ((c = getChar()) != '\n'){
-            if (c!=0){
-                switch (c){
-                    case '\b':
-                        if (position > 0){
-                            buffer[--position] = 0;
-                            if(colCursor >= 0) {
-                                colCursor -= 8;
-                            }
-                            putCharFrom(' ', commandLine, colCursor);
+            switch (c){
+                case '\b':
+                    if (position > 0){
+                        buffer[--position] = 0;
+                        if(colCursor >= 0) {
+                            colCursor -= 8;
                         }
-                        break;
-                    case 'p':
-                    case 'P':
-                        pause();
-                        break;
-                    case 'q':
-                    case 'Q':
-                        exit();
-                        break;
-                    case 'r':
-                    case 'R':
-                        rotate();
-                        printBoard();
-                        break;
-                    default:
-                        if (position<10 && IS_ALPHA(c)){
-                        buffer[position++] = c;
-                        putCharFrom(c, commandLine, colCursor);
-                        colCursor += 8;
-                        }
-                        break;
-                } 
+                        putCharFrom(' ', commandLine, colCursor);
+                    }
+                    break;
+                case 'p':
+                case 'P':
+                    pause();
+                    break;
+                case 'q':
+                case 'Q':
+                    exit();
+                    break;
+                case 'r':
+                case 'R':
+                    rotate();
+                    printBoard();
+                    break;
+                default:
+                    if (position<10 && IS_ALPHA(c)){
+                    buffer[position++] = c;
+                    putCharFrom(c, commandLine, colCursor);
+                    colCursor += 8;
+                    }
+                    break;
             }
             if(abs(whiteTicks - blackTicks) > MAX_TIME){
                 maxTimeReached = 1;

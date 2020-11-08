@@ -119,5 +119,5 @@ void throwInvOpCode(){
 }
 
 void about(){
-    printcln("Clifford 1.0 by Arce Julian, Lombardi Matias & Domingues Paula.", 0xcfd7e6);
+    printcln("Shernell 1.0 by Arce Julian, Lombardi Matias & Domingues Paula.", 0xcfd7e6);
 }

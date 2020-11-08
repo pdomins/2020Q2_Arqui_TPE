@@ -82,9 +82,7 @@ void printChessMenu(){
 char askYesNo(){
     char ans;
     while ((ans = getChar())!= 'n' && ans != 'y' && ans !='Y'){
-        if (ans!=0){
         println("Invalid option. Please enter 'Y' if you want to start a new chess game. If not, enter 'n'."); 
-        }
     }if (ans == 'n'){
         println("Need help? Enter chess help or chess -h to display a menu of the different options from which you can choose");
     }else if(ans == 'Y' || ans == 'y'){

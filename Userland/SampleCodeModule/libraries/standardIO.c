@@ -36,7 +36,9 @@ void removeChar(){
 
 char getChar(){
     char c;
-    read(&c, 1);    
+    do{
+        read(&c, 1);       
+    } while (c == 0);
     return c;
 }
 

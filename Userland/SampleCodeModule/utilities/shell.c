@@ -24,18 +24,16 @@ void initShell(){
         char content[CHUNK] = {0};  
         int contentLength = 0;
         while( (c = getChar()) != '\n'){
-            if(c != 0){
-                switch(c){
-                    case '\b':
-                            if(contentLength > 0){
-                                content[--contentLength] = 0;
-                                removeChar();
-                            }
-                            break;
-                    default:
-                        content[contentLength++] = c;
-                        putChar(c);
-                }
+            switch(c){
+                case '\b':
+                        if(contentLength > 0){
+                            content[--contentLength] = 0;
+                            removeChar();
+                        }
+                        break;
+                default:
+                    content[contentLength++] = c;
+                    putChar(c);
             }
         }
         content[contentLength]=0;
