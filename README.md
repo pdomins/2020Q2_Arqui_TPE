@@ -26,6 +26,7 @@ Previo a la lectura de este manual, se insta a tomar en consideración que al mo
 
 ## Funciones de la Shell
 El usuario cuenta con nueve comandos que se le permiten ejecutar desde la terminal.  Para ejecutar los mismos simplemente se debe escribir en ella el comando deseado y presionar la tecla “ENTER”.<br>
+
 *about*: Imprime por salida estándar información sobre el Sistema Operativo y sus desarrolladores.<br>
 *help*: Imprime por salida estándar un menú con las distintas opciones útiles para el usuario.<br>
 *time*: Imprime por salida estándar el horario local, en formato DD/MM/AA HH:MM:SS.<br>
