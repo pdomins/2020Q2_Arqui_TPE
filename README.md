@@ -5,7 +5,7 @@
 -Domingues, Paula Andrea 60148                                
 -Lombardi, Matias Federico 60527                               
 
-## Manual de Usuario
+# Manual de Usuario
 
 
 ## Índice 
