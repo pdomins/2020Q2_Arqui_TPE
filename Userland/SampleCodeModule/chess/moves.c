@@ -25,6 +25,8 @@ int isFirstMove(int fromRow, int fromCol);
 
 int isWhiteTurn(int turn);
 
+int possibleCheck();
+
 int move(int (*check)(int, int, int, int), int fromRow, int fromCol, int toRow, int toCol);
 
 int isAvailable(int toRow, int toCol);
@@ -93,6 +95,9 @@ int moveQueen(int fromRow, int fromCol, int toRow, int toCol) {
 }
 
 int shortCastling(int turn) {
+    if(possibleCheck())
+        return 0;
+        
     if (isWhiteTurn(turn)) {
         if (board[7][4][PIECE] == WHITE_KING && board[7][7][PIECE] == WHITE_ROOK &&
             board[7][4][MOVEMENTS] == 0 && board[7][7][MOVEMENTS] == 0 &&
@@ -122,6 +127,9 @@ int shortCastling(int turn) {
 }
 
 int longCastling(int turn) {
+    if(possibleCheck())
+        return 0;
+    
     if (isWhiteTurn(turn)) {
         if (board[7][4][PIECE] == WHITE_KING && board[7][0][PIECE] == WHITE_ROOK &&
             board[7][4][MOVEMENTS] == 0 && board[7][0][MOVEMENTS] == 0 &&
@@ -226,7 +234,7 @@ int searchKing(int row, int col){
     return 0;
 }
 
-void possibleCheck(int toRow, int toCol){
+int possibleCheck(){
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
@@ -241,11 +249,13 @@ void possibleCheck(int toRow, int toCol){
                     while (getChar() != '\n'){
                         updateTime();
                     }
-                    return;
+                    clearLine(statusLine);
+                    return 1;
                 }
             }
         }    
     }
+    return 0;
 }
 
 
@@ -260,7 +270,7 @@ int move(int (*check)(int, int, int, int), int fromRow, int fromCol, int toRow, 
 
         if(board[toRow][toCol][PIECE] == WHITE_KING){
             whiteKing[0] = toRow;
-            blackKing[1] = toCol;
+            whiteKing[1] = toCol;
         }
         if(board[toRow][toCol][PIECE] == BLACK_KING){
             blackKing[0]=toRow;
@@ -276,7 +286,7 @@ int move(int (*check)(int, int, int, int), int fromRow, int fromCol, int toRow, 
 
         setToMovedPiece(toRow, toCol);
 
-        possibleCheck(toRow, toCol);
+        possibleCheck();
 
         return 1;
     }
