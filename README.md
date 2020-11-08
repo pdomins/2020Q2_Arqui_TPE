@@ -1,9 +1,9 @@
 # 2020Q2_Arqui_TPE
 
-Autores:
--Arce Doncella , Julian Francisco 60509
--Domingues, Paula Andrea 60148
--Lombardi, Matias Federico 60527
+Autores:                                                   
+-Arce Doncella , Julian Francisco 60509                         
+-Domingues, Paula Andrea 60148                                
+-Lombardi, Matias Federico 60527                               
 
 Manual de Usuario
 
@@ -78,9 +78,9 @@ A continuación, se desplegará la Shell comentada anteriormente y se podrá eje
 
 Syscalls 
 A continuación, se encuentra un cuadro de las syscalls provistas al usuario.
-----------------------------------------------------------------------------------------------
+
 | Number | Syscall Name | %rdi |     %rsi     |      %rdx      |  %r10   |  %r8    |   %r9   |
-----------------------------------------------------------------------------------------------
+|--------|--------------|------|--------------|----------------|---------|---------|---------|
 |   0    |     read     | 0x00 |  int length  |  char* toRead  |    -    |    -    |    -    |
 |   1    |     write    | 0x01 |  int length  |  char* toWrite | int row | int col |int color|
 |   2    |     draw     | 0x02 |  int* matrix |    int row     | int col | int row | int cols|
@@ -91,7 +91,6 @@ A continuación, se encuentra un cuadro de las syscalls provistas al usuario.
 |   11   |    setAlarm  | 0x0B |  int length  |uint64_t enabled|    -    |    -    |    -    |
 |   12   | screenHeight | 0x0C |      -       |        -       |    -    |    -    |    -    |
 |   13   | screenWidth  | 0x0D |      -       |        -       |    -    |    -    |    -    |
-----------------------------------------------------------------------------------------------
 
 
 
