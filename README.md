@@ -1,14 +1,14 @@
 # 2020Q2_Arqui_TPE
 
-Autores:                                                   
+## Autores:                                                   
 -Arce Doncella , Julian Francisco 60509                         
 -Domingues, Paula Andrea 60148                                
 -Lombardi, Matias Federico 60527                               
 
-Manual de Usuario
+## Manual de Usuario
 
 
-Índice 
+## Índice 
 
 Introducción                                          
 Funciones de la Shell                                 
@@ -19,12 +19,12 @@ Ejecución del Programa
 Syscalls                                               
 
 
-Introducción
+## Introducción
 
 Este documento contiene un manual básico respecto de los comandos ofrecidos al usuario para desenvolverse en la terminal. A continuación, se presentarán las distintas instrucciones implementadas con sus respectivas funcionalidades, junto con un ejemplo de uso. 
 Previo a la lectura de este manual, se insta a tomar en consideración que al momento de bootear el kernel se desplegará un intérprete de comandos o Shell en donde se podrán insertar los comandos correspondientes. Las indicaciones al respecto estarán indicadas en el  Inciso 6.
 
-Funciones de la Shell
+## Funciones de la Shell
 El usuario cuenta con nueve comandos que se le permiten ejecutar desde la terminal.  Para ejecutar los mismos simplemente se debe escribir en ella el comando deseado y presionar la tecla “ENTER”.
 about: Imprime por salida estándar información sobre el Sistema Operativo y sus desarrolladores.
 help: Imprime por salida estándar un menú con las distintas opciones útiles para el usuario.
@@ -35,11 +35,11 @@ clear: Limpia la pantalla de la terminal activa.
 exceptionZ: Arroja una excepción de división por cero. Subsecuentemente, imprime en pantalla el respectivo mensaje de error y el valor de los registros al momento que ocurrió la misma, incluidos entre ellos el Instruction Pointer.  
 exceptionOP: Al igual que exceptionZ, arroja una excepción por código de operación invalido e imprime su información correspondiente.
 chess: Inicia la ejecución de un juego de ajedrez. En el apartado siguiente se explicarán las funcionalidades del mismo en mayor detalle.
-Ejemplo de uso:
+### Ejemplo de uso:
 Se ejecuta el comando
   $time
 
-Funciones del Chess
+## Funciones del Chess
   Funciones Básicas
 Al igual que las funciones de Shell, las funciones básicas del ajedrez son comandos ejecutables desde terminal. Se comportan del mismo modo que las anteriormente mencionadas. 
 
@@ -48,12 +48,12 @@ chess resume o continue: Reanuda la partida de ajedrez en el estado previo a la 
 chess menu o help: Despliega un menú con las distintas opciones implementadas para el juego. Se puede ingresar también como chess -m o chess -h.
 chess info: Imprime, en el caso que hubiera una partida en pausa, el estado en el que se encuentra la misma. Se distingue de qué jugador es el turno y los tiempos acordes a los mismos. Compatible con chess -i.
 
-Ejemplo de uso: 
+### Ejemplo de uso: 
 Se inicia un juego de ajedrez nuevo con el comando 
         $ chess
 
 
-  Funciones In-Game
+### Funciones In-Game
 Una vez iniciado el juego, mediante su respectivo comando básico antes  mencionado, se desplegará un tablero de ajedrez, con las piezas y timers necesarios. A partir de aquí, es requerido que el usuario ingrese la jugada que desea llevar a cabo, utilizando una notación específica del ajedrez, en la cual primero se declara en qué posición se encuentra la pieza que se desea mover y luego hacia qué coordenada se desea mover. Por ejemplo, en el caso que se quiera mover el peón que se encuentra en la posición c2  hacia la posición c4, debería ingresarse el comando 
       $ c2c4
 Una vez que el movimiento se haya realizado, se desplegará en el costado derecho un log con las jugadas de cada contrincante. 
@@ -64,19 +64,18 @@ A diferencia de las funciones regulares de ajedrez, los siguientes comandos est�
 ‘Q’: Finaliza la ejecución del juego y retorna a la Shell. 
 
 
-Requisitos Mínimos 
+## Requisitos Mínimos 
 Previo a obtener un archivo ejecutable, es necesario realizar una compilación del código que se pone a disposición. Para poder compilar correctamente, se debe contar con una computadora que cuente con Docker, el cual será requerido al momento de compilación y que a su vez debe contar con la imagen proveída por la cátedra y QEMU, requerido al momento de ejecución.
 Asimismo, para poder ejecutar correctamente el emulador de procesadores, es requisito contar con una computadora con por lo menos un CPU de 64-bits, sea Intel o AMD (o cualquier otro que utilice la arquitectura x86-64) y como mínimo 2 MB de RAM.  
 
-Ejecución del Programa
+## Ejecución del Programa
 Dentro del contenedor de Docker mencionado anteriormente:
 Dentro de la carpeta Toolchain, ejecutar el comando make all.
 Dentro de la carpeta principal, ejecutar el comando make all.
 Ejecutar el comando ./run.sh
 A continuación, se desplegará la Shell comentada anteriormente y se podrá ejecutar cualquiera de los comandos mencionados.
 
-
-Syscalls 
+## Syscalls 
 A continuación, se encuentra un cuadro de las syscalls provistas al usuario.
 
 | Number | Syscall Name | %rdi |     %rsi     |      %rdx      |  %r10   |  %r8    |   %r9   |
