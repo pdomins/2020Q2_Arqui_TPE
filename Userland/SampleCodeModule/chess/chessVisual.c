@@ -167,8 +167,12 @@ void printBoard() {
         }
     }
     if (turns % 2 == 0) {
+        clearLine(statusLine);
         printcFrom("It's player 1 turn", statusLine, 0, color_log);
-    } else printcFrom("It's player 2 turn", statusLine, 0, color_log);
+    } else {
+        clearLine(statusLine);
+        printcFrom("It's player 2 turn", statusLine, 0, color_log);
+    }
 }
 
 void printTime(int secondsWhite, int secondsBlack) {

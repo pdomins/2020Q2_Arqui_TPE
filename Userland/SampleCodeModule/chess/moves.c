@@ -65,6 +65,8 @@ extern int movesWhite;
 extern int movesBlack;
 extern int turns;
 
+int whiteKing[2] = {7,4};
+int blackKing[2] = {0,4};
 
 int movePawn(int fromRow, int fromCol, int toRow, int toCol) {
     return move(checkPawn, fromRow, fromCol, toRow, toCol);
@@ -189,19 +191,93 @@ int isWhiteTurn(int turn) {
     return turn % 2 == 0;
 }
 
+int searchKing(int row, int col){
+    int kingRow,kingCol;
+    if(isWhitePiece(board[row][col][PIECE])){
+        kingRow = blackKing[0];
+        kingCol = blackKing[1];
+    }else{
+        kingRow = whiteKing[0];
+        kingCol = whiteKing[1];
+    }
+    switch (board[row][col][PIECE])
+    {
+        case BLACK_PAWN:
+        case WHITE_PAWN:
+            return checkPawn(row, col, kingRow, kingCol);
+        case BLACK_BISHOP:
+        case WHITE_BISHOP:
+            return checkBishop(row, col, kingRow, kingCol);
+        case BLACK_ROOK:
+        case WHITE_ROOK:
+            return checkRook(row, col, kingRow, kingCol);
+        case BLACK_KNIGHT:
+        case WHITE_KNIGHT:
+            return checkKnight(row, col, kingRow ,kingCol);
+        case BLACK_QUEEN:
+        case WHITE_QUEEN:
+            return checkQueen(row, col, kingRow, kingCol);
+        case BLACK_KING:
+        case WHITE_KING:
+            return checkKing(row, col, kingRow , kingCol);
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+void possibleCheck(int toRow, int toCol){
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if(board[i][j][PIECE] != 0){
+                if(searchKing(i, j)){
+                    if(isWhitePiece(board[i][j][PIECE])){
+                        printcFrom("The black king is in check. Press \"ENTER\" to continue.",statusLine,0,0xfcba03);
+                    }else{
+                        printcFrom("The white king is in check. Press \"ENTER\" to continue.",statusLine,0,0xfcba03);
+                    }
+                    while (getChar() != '\n'){
+                        updateTime();
+                    }
+                    return;
+                }
+            }
+        }    
+    }
+}
+
+
 int move(int (*check)(int, int, int, int), int fromRow, int fromCol, int toRow, int toCol) {
     if (check(fromRow, fromCol, toRow, toCol)) {
         checkIfKing(board[toRow][toCol][PIECE]); //checks if the piece to be eaten is a king
+        
         if (sameTeam(fromRow, fromCol, toRow, toCol))
             return 0;
+
         board[toRow][toCol][PIECE] = board[fromRow][fromCol][PIECE];
+
+        if(board[toRow][toCol][PIECE] == WHITE_KING){
+            whiteKing[0] = toRow;
+            blackKing[1] = toCol;
+        }
+        if(board[toRow][toCol][PIECE] == BLACK_KING){
+            blackKing[0]=toRow;
+            blackKing[1]=toCol;
+        }
         if (checkPromotion(fromRow, fromCol, toRow, toCol)) {
             promote(toRow, toCol);
         }
+
         board[fromRow][fromCol][PIECE] = 0;
+
         checkPassant(fromRow, fromCol, toRow, toCol);
 
         setToMovedPiece(toRow, toCol);
+
+        possibleCheck(toRow, toCol);
+
         return 1;
     }
     return 0;
