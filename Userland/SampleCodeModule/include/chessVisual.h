@@ -12,10 +12,15 @@
 #define color_diff 0x38AD34
 
 void printBoard();
-void printTime(int whiteSecs,int blackSecs);
+
+void printTime(int whiteSecs, int blackSecs);
+
 void printLog();
-void updateLog(char *buffer,int turns);
+
+void updateLog(char *buffer, int turns);
+
 void rotate();
+
 void printExitMessage(int turns, int exitType);
 
 

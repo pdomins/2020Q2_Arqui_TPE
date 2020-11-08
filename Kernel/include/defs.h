@@ -13,7 +13,7 @@
 #define ACS_READ        0x02            /* segmento de lectura */
 #define ACS_WRITE       0x02            /* segmento de escritura */
 #define ACS_IDT         ACS_DSEG
-#define ACS_INT_386 	0x0E		/* Interrupt GATE 32 bits */
+#define ACS_INT_386     0x0E        /* Interrupt GATE 32 bits */
 #define ACS_INT         ( ACS_PRESENT | ACS_INT_386 )
 
 

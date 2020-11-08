@@ -14,9 +14,9 @@ typedef struct dateInfo {
     int minutes;
     int seconds;
 
-}dateInfo;
+} dateInfo;
 
-typedef struct dateInfo * date;
+typedef struct dateInfo *date;
 
 
 #endif

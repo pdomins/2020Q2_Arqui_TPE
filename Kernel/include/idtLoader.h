@@ -2,5 +2,5 @@
 #define IDT_LOADER_H
 
 void load_idt();
-//:) 
+
 #endif

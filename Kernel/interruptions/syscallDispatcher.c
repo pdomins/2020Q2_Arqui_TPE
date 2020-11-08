@@ -19,83 +19,94 @@
 
 #define MEM_BYTES 32
 
-int readHandler(int length, char* toRead);
-int writeHandler(int length, char* toWrite, int row, int col,int color);
-int drawHandler(int * matrix, int row, int col, int rows, int columns);
+int readHandler(int length, char *toRead);
+
+int writeHandler(int length, char *toWrite, int row, int col, int color);
+
+int drawHandler(int *matrix, int row, int col, int rows, int columns);
+
 void getTime(date myDate);
-void memDumpHandler(char * dir, char * dump);
+
+void memDumpHandler(char *dir, char *dump);
+
 void infoRegHandler(uint64_t firstP[]);
+
 void clearScreenHandler();
+
 int screenHeightHandler();
+
 int screenWidthHandler();
 
 
-int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP,uint64_t fifthP) {
-	switch (call) {
-		case READ_SYSCALL:
-			return readHandler((int) firstP, (char*) secondP); // 0 read
-		case WRITE_SYSCALL:
-			return writeHandler((int) firstP, (char*) secondP,(int) thirdP, (int) fourthP, (int) fifthP); // 1 write
-		case DRAW_SYSCALL:
-            return drawHandler((int *) firstP, (int) secondP,(int) thirdP, (int) fourthP, (int) fifthP);
-		case TIME_SYSCALL: 
-			getTime((date) firstP);
-			return 0;
-		case INFO_REG:
-			infoRegHandler((uint64_t*) firstP);
-			return 0;
-		case MEM_DUMP:
-			memDumpHandler((char *) firstP, (char *) secondP);
-			return 0;
-		case CLEAR_SYSCALL:
-			clearScreenHandler();
-			return 0;
-		case SET_ALARM:
-			addFunc((void *)firstP, secondP);
-			return 0;
-		case SCREEN_HEIGHT:
-			return screenHeightHandler();
-		case SCREEN_WIDTH: 
-			return screenWidthHandler();
-		default:
-			return -1;
-	}
-	return -1;
+int syscallDispatcher(uint64_t call, uint64_t firstP, uint64_t secondP, uint64_t thirdP, uint64_t fourthP,
+                      uint64_t fifthP) {
+    switch (call) {
+        case READ_SYSCALL:
+            return readHandler((int) firstP, (char *) secondP); // 0 read
+        case WRITE_SYSCALL:
+            return writeHandler((int) firstP, (char *) secondP, (int) thirdP, (int) fourthP, (int) fifthP); // 1 write
+        case DRAW_SYSCALL:
+            return drawHandler((int *) firstP, (int) secondP, (int) thirdP, (int) fourthP, (int) fifthP);
+        case TIME_SYSCALL:
+            getTime((date) firstP);
+            return 0;
+        case INFO_REG:
+            infoRegHandler((uint64_t *) firstP);
+            return 0;
+        case MEM_DUMP:
+            memDumpHandler((char *) firstP, (char *) secondP);
+            return 0;
+        case CLEAR_SYSCALL:
+            clearScreenHandler();
+            return 0;
+        case SET_ALARM:
+            addFunc((void *) firstP, secondP);
+            return 0;
+        case SCREEN_HEIGHT:
+            return screenHeightHandler();
+        case SCREEN_WIDTH:
+            return screenWidthHandler();
+        default:
+            return -1;
+    }
+    return -1;
 }
 
-int readHandler(int length, char* toRead){
+int readHandler(int length, char *toRead) {
     return readBuffer(length, toRead);
 }
 
-int writeHandler(int length, char* toWrite, int row, int col, int color){
-	return printStringFrom(toWrite,length,row,col,color);
+int writeHandler(int length, char *toWrite, int row, int col, int color) {
+    return printStringFrom(toWrite, length, row, col, color);
 }
 
-int drawHandler(int * matrix, int row, int col, int rows, int columns) {
+int drawHandler(int *matrix, int row, int col, int rows, int columns) {
     return drawMatrix(matrix, row, col, rows, columns);
 }
 
-void getTime(date myDate){
-	getLocalDate(myDate);
+void getTime(date myDate) {
+    getLocalDate(myDate);
 }
 
-void memDumpHandler(char * dir, char * dump) {
-	for(int i = 0; i < MEM_BYTES; i++) { //Cambiar el cuatro por defines, seria algo asi como MEM_BYTES / sizeof(uint64_t)
-		dump[i] = dir[i];
-	}
+void memDumpHandler(char *dir, char *dump) {
+    for (int i = 0;
+         i < MEM_BYTES; i++) { //Cambiar el cuatro por defines, seria algo asi como MEM_BYTES / sizeof(uint64_t)
+        dump[i] = dir[i];
+    }
 }
 
-void infoRegHandler(uint64_t firstP[]){
-	fillWithRegs(firstP);
+void infoRegHandler(uint64_t firstP[]) {
+    fillWithRegs(firstP);
 }
 
-void clearScreenHandler(){
-	clearScreen();
+void clearScreenHandler() {
+    clearScreen();
 }
 
 int screenHeightHandler() {
-	return screenHeight();
+    return screenHeight();
 }
+
 int screenWidthHandler() {
-	return screenWidth();
+    return screenWidth();
 }

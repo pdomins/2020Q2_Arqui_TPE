@@ -12,7 +12,6 @@
 #define TAB 0x0F
 #define ENTER 0x1C
 #define L_CTRL 0x1D
-//#define R_CTRL 0x
 #define L_SHIFT 0x2A
 #define R_SHIFT 0x36
 #define L_ALT 0x38
@@ -30,37 +29,86 @@ char buffer[BUFFER_SIZE] = {0};
 int prev = 0;
 int curr = 0;
 static char pressCodes[KEYS][2] =
-{{0, 0}, {0, 0}, {'1', '!'}, {'2', '@'},
-{'3', '#'}, {'4', '$'}, {'5', '%'}, {'6', '^'}, {'7', '&'},
-{'8', '*'}, {'9', '('}, {'0', ')'}, {'-', '_'}, {'=', '+'},
-{'\b','\b'}, {'\t','\t'}, {'q', 'Q'}, {'w', 'W'},{'e', 'E'},
-{'r', 'R'}, {'t', 'T'}, {'y', 'Y'}, {'u', 'U'}, {'i', 'I'},
-{'o', 'O'}, {'p', 'P'}, {'[', '{'}, {']', '}'}, {'\n', '\n'},
-{0, 0}, {'a', 'A'}, {'s', 'S'}, {'d', 'D'}, {'f', 'F'},
-{'g', 'G'}, {'h', 'H'}, {'j', 'J'}, {'k', 'K'}, {'l', 'L'},
-{';', ':'}, {'\'', '\"'}, {'`', '~'}, {0, 0}, {'\\', '|'},
-{'z', 'Z'}, {'x', 'X'}, {'c', 'C'}, {'v', 'V'}, {'b', 'B'},
-{'n', 'N'}, {'m', 'M'}, {',', '<'}, {'.', '>'}, {'/', '?'},
-{0, 0}, {0, 0}, {0, 0}, {' ', ' '}, {0, 0}};
+        {{0,    0},
+         {0,    0},
+         {'1',  '!'},
+         {'2',  '@'},
+         {'3',  '#'},
+         {'4',  '$'},
+         {'5',  '%'},
+         {'6',  '^'},
+         {'7',  '&'},
+         {'8',  '*'},
+         {'9',  '('},
+         {'0',  ')'},
+         {'-',  '_'},
+         {'=',  '+'},
+         {'\b', '\b'},
+         {'\t', '\t'},
+         {'q',  'Q'},
+         {'w',  'W'},
+         {'e',  'E'},
+         {'r',  'R'},
+         {'t',  'T'},
+         {'y',  'Y'},
+         {'u',  'U'},
+         {'i',  'I'},
+         {'o',  'O'},
+         {'p',  'P'},
+         {'[',  '{'},
+         {']',  '}'},
+         {'\n', '\n'},
+         {0,    0},
+         {'a',  'A'},
+         {'s',  'S'},
+         {'d',  'D'},
+         {'f',  'F'},
+         {'g',  'G'},
+         {'h',  'H'},
+         {'j',  'J'},
+         {'k',  'K'},
+         {'l',  'L'},
+         {';',  ':'},
+         {'\'', '\"'},
+         {'`',  '~'},
+         {0,    0},
+         {'\\', '|'},
+         {'z',  'Z'},
+         {'x',  'X'},
+         {'c',  'C'},
+         {'v',  'V'},
+         {'b',  'B'},
+         {'n',  'N'},
+         {'m',  'M'},
+         {',',  '<'},
+         {'.',  '>'},
+         {'/',  '?'},
+         {0,    0},
+         {0,    0},
+         {0,    0},
+         {' ',  ' '},
+         {0,    0}};
 
 static int shiftPressed = 0;
 static int blockMayus = 0;
 static int ctrlPressed = 0;
-uint64_t registers[TOTAL_REGISTERS]= {0}; 
+uint64_t registers[TOTAL_REGISTERS] = {0};
+
+int isSpecialKey(int scanCode);
 
 void preserveRegisters();
+
 void takeSnapshot(uint64_t *rsp);
 
-int isSpecialKey(int scanCode){
+int isSpecialKey(int scanCode) {
     return scanCode == ESC || /*scanCode == BACKSPACE ||scanCode == ENTER ||*/ scanCode == L_CTRL ||
-            scanCode == L_SHIFT || scanCode == R_SHIFT || scanCode == L_ALT || scanCode == CAPS_LOCK;
+           scanCode == L_SHIFT || scanCode == R_SHIFT || scanCode == L_ALT || scanCode == CAPS_LOCK;
 }
 
-
-void keyboard_management(uint64_t *rsp){
+void keyboard_management(uint64_t *rsp) {
     int scan_code = read_keyboard();
     prev = curr;
-    switch(scan_code) {
+    switch (scan_code) {
         case L_SHIFT:
         case R_SHIFT:
             shiftPressed = 1;
@@ -70,28 +118,26 @@ void keyboard_management(uint64_t *rsp){
             shiftPressed = 0;
             break;
         case CAPS_LOCK:
-            blockMayus = blockMayus? 0:1;
+            blockMayus = blockMayus ? 0 : 1;
             break;
         case L_CTRL:
-       // case R_CTRL:
             ctrlPressed = 1;
             break;
         case L_CTRL + RELEASED_KEY:
-        //case R_CTRL + RELEASED_KEY:
             ctrlPressed = 0;
             break;
         case L_ALT:
             break;
     }
-    
-    
-    if(scan_code <= MAX_PRESSED_KEY && !isSpecialKey(scan_code)) {
+
+
+    if (scan_code <= MAX_PRESSED_KEY && !isSpecialKey(scan_code)) {
         int secondChar = shiftPressed;
-        if(IS_ALPHA(pressCodes[scan_code][0])){
-            secondChar = blockMayus ? 1 - shiftPressed: shiftPressed;
+        if (IS_ALPHA(pressCodes[scan_code][0])) {
+            secondChar = blockMayus ? 1 - shiftPressed : shiftPressed;
         }
-        if(ctrlPressed) {
-            if (pressCodes[scan_code][secondChar] == 's') 
+        if (ctrlPressed) {
+            if (pressCodes[scan_code][secondChar] == 's')
                 takeSnapshot(rsp);
             return;
         }
@@ -102,26 +148,27 @@ void keyboard_management(uint64_t *rsp){
 
 
 int leer = 0;
-int readBuffer(int length, char * toWrite){
-    for(int i = 0 ; i < length/* || enter */ ; i++ ){
-        if(buffer[leer] == 0){
+
+int readBuffer(int length, char *toWrite) {
+    for (int i = 0; i < length/* || enter */ ; i++) {
+        if (buffer[leer] == 0) {
             return i;
         }
         toWrite[i] = buffer[leer];
         buffer[leer] = 0;
-        leer = (leer+1) % BUFFER_SIZE;
+        leer = (leer + 1) % BUFFER_SIZE;
     }
-    return length; 
+    return length;
 }
 
-void takeSnapshot(uint64_t *rsp){
-    for (int i = 0; i < TOTAL_REGISTERS; i++){
-        registers[i]=rsp[i];
+void takeSnapshot(uint64_t *rsp) {
+    for (int i = 0; i < TOTAL_REGISTERS; i++) {
+        registers[i] = rsp[i];
     }
 }
 
-void fillWithRegs(uint64_t * buffer){
-    for (int i = 0; i < TOTAL_REGISTERS; i++){
-        buffer[i]=registers[i];
+void fillWithRegs(uint64_t *buffer) {
+    for (int i = 0; i < TOTAL_REGISTERS; i++) {
+        buffer[i] = registers[i];
     }
 }
