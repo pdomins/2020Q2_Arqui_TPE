@@ -130,10 +130,10 @@ SECTION .text
 
 
 %macro exceptionHandler 1
-	mov rax, [initR]	
-	mov [rsp], rax
-	mov rax, [initR + 8]
-	mov [rsp + 24], rax
+	;mov rax, [initR]
+	;mov [rsp], rax
+	;mov rax, [initR + 8]
+	;mov [rsp + 24], rax
 
 	pushState
 
@@ -143,6 +143,11 @@ SECTION .text
 	call exceptionDispatcher
 
 	popState
+
+    mov rax, [initR]
+    mov [rsp], rax
+    mov rax, [initR + 8]
+    mov [rsp + 24], rax
 
 	iretq
 %endmacro
